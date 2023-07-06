@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mastermind</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Mastermind game">
+    <link id="favicon" rel="icon" href="./images/matrix_square.svg" sizes="any" type="image/svg+xml">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./images/matrix_square.png">
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="content">
+    <div class="app">
+        <ul class="result">
+
+        </ul>
+        <div class="check-div">
+            <div class="input-div">
+                <input  inputmode="numeric" pattern="[0-9]*"
+                        type="text"
+                        class="inputItem0"
+                        data-index="0"
+                        maxlength="1"
+                        autofocus
+                />
+                <input inputmode="numeric" pattern="[1-6]" type="text" class="inputItem1" data-index="1" maxlength="1" />
+                <input inputmode="numeric" pattern="[0-9]*" type="text" class="inputItem2" data-index="2" maxlength="1" />
+                <input inputmode="numeric" pattern="[0-9]*" type="text" class="inputItem3" data-index="3" maxlength="1" />
+            </div>
+            <div class="log"></div>
+        </div>
+    </div>
+    <div class="qrcode"></div>
+    <div class="qrcontainerserver"></div>
+    <div id="popup1" class="overlay">
+        <div class="popup">
+            <h2>You win</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+                Result 0
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <button id="butInstall" class="butInstall install hidden hidden2">Install as app</button>
+</footer>
+<template id="result-row">
+    <li class="row"><div class="request"></div><div class="response"></div></li>
+</template>
+</body>
+
+</html>
