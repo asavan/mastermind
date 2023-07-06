@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mastermind</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Mastermind game">
+    <link id="favicon" rel="icon" href="./images/matrix_square.svg" sizes="any" type="image/svg+xml">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./images/matrix_square.png">
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+<script defer src="main.7b3c1118b96ef49d7f2f.js"></script><style type="text/css">*{margin:0;padding:0}:root{--main-color:#f0f8ff;--comp-color:red;--player-color:#4169e1;--field-size:3}body,html{height:100%}body{display:flex;flex-direction:column}.content{flex:1 0 auto}footer{flex:0 0 auto}.qrcode.big{left:0;position:absolute;top:0;width:calc(var(--field-size)*100px + 50px)}.qrcode{display:inline-block;width:300px}@media (max-width:700px){.hidden2{display:none}}.install{background-color:var(--main-color);border:0;cursor:pointer;font:700 24px/100px Tahoma,sans;height:100px;padding:0;text-align:center;width:100%}.hidden{display:none}img{display:block;height:100px;margin-left:auto;margin-right:auto;max-width:100%}.cell,.digit{background-color:var(--main-color);border:2px solid gray;border-radius:10px;display:inline-block;font:700 24px/100px Tahoma,sans;margin:5px;max-height:100px;max-width:100px;text-align:center;touch-action:none;user-select:none;width:100px}.digit{cursor:grab}.player{--border-color:var(--player-color)}.comp{--border-color:var(--comp-color)}.best{border:2px solid green;color:green}@media (max-width:450px){.hidden2{display:none}}.overlay{background:rgba(0,0,0,.7);bottom:0;left:0;opacity:0;position:fixed;right:0;top:0;transition:opacity .7s;visibility:hidden}.overlay.show{opacity:1;visibility:visible}.popup{background:#fff;border-radius:5px;margin:70px auto;padding:20px;position:relative;transition:all 5s ease-in-out;width:80%}.popup h2{color:#333;font-family:Tahoma,Arial,sans-serif;margin-top:0}.popup .close{color:#333;font-size:30px;font-weight:700;position:absolute;right:30px;text-decoration:none;top:20px;transition:all .4s}.popup .close:hover{color:var(--player-color)}.popup .content{max-height:30%;overflow:auto}.check-div{flex:0 0 auto;height:100px;text-align:center;width:300px}.input-div{margin-top:10px}input{border:none;border-radius:10%;font-family:Fjalla One,sans-serif;font-size:28px;height:50px;margin-left:5px;outline:1px solid #000;text-align:center;width:50px}input:focus{outline:2px solid #3494fe}.app{display:flex;flex-direction:column;height:100%;max-height:450px}.result{column-count:2;column-fill:auto;flex:1 0 auto;list-style-type:none;margin-top:10px;max-height:350px;width:500px}.row{display:flex;font-family:Fjalla One,sans-serif;font-size:36px;justify-content:space-between;margin-left:30px}</style></head>
+<body>
+<div class="content">
+    <div class="app">
+        <ul class="result">
+
+        </ul>
+        <div class="check-div">
+            <div class="input-div">
+                <input  inputmode="numeric" pattern="[0-9]*"
+                        type="text"
+                        class="inputItem0"
+                        data-index="0"
+                        maxlength="1"
+                        autofocus
+                />
+                <input inputmode="numeric" pattern="[1-6]" type="text" class="inputItem1" data-index="1" maxlength="1" />
+                <input inputmode="numeric" pattern="[0-9]*" type="text" class="inputItem2" data-index="2" maxlength="1" />
+                <input inputmode="numeric" pattern="[0-9]*" type="text" class="inputItem3" data-index="3" maxlength="1" />
+            </div>
+            <div class="log"></div>
+        </div>
+    </div>
+    <div class="qrcode"></div>
+    <div class="qrcontainerserver"></div>
+    <div id="popup1" class="overlay">
+        <div class="popup">
+            <h2>You win</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+                Result 0
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <button id="butInstall" class="butInstall install hidden hidden2">Install as app</button>
+</footer>
+<template id="result-row">
+    <li class="row"><div class="request"></div><div class="response"></div></li>
+</template>
+</body>
+
+</html>

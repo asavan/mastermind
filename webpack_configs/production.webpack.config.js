@@ -70,9 +70,7 @@ const prodConfig = (env, argv) => {
                     { from: './src/images', to: './images' },
                     { from: './github', to: './' },
                     { from: './src/manifest.json', to: './' },
-                    { from: './.well-known', to: './.well-known' },
-                    { from: 'src/rules.html', to: './' },
-                    { from: 'src/bin', to: './' }
+                    { from: './.well-known', to: './.well-known' }
                 ],
             })
         ]
