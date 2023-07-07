@@ -58,9 +58,7 @@ footer {
     padding: 0;
 }
 
-.hidden {
-    display: none;
-}
+
 
 img {
     max-width: 100%;
@@ -169,14 +167,15 @@ input:focus {
 }
 
 .request {
+    font-style: italic;
 }
 
 .app {
     display: flex;
     flex-direction: column;
+    margin: auto;
     height: 100%;
-    max-height: 450px;
-    max-width: 450px;
+    max-width: 300px;
 }
 
 .result {
@@ -185,13 +184,16 @@ input:focus {
    margin-top: 10px;
    columns: 2;
    column-fill: auto;
-   max-height: 350px;
+   max-height: 250px;
 }
 
 .row {
-    margin-left: 30px;
     font-size: 36px;
     display: flex;
-    font-family: 'Fjalla One', sans-serif;
+    font-family: 'Roboto Mono', monospace;
     justify-content: space-between;
+}
+
+.hidden {
+    display: none;
 }

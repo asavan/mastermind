@@ -47,6 +47,7 @@ function handleInput(window, document, settings, callback) {
         if (str.length === size) {
             // clear
             callback(str);
+            str = "";
         }
 
         return false;
@@ -91,6 +92,16 @@ function handleInput(window, document, settings, callback) {
           }
         }
       } else {
+        if (str.length === size) {
+            setTimeout(() => {
+            if (str.length === size) {
+                callback(str);
+                str = "";
+            }
+            }, 200);
+            // clear
+        }
+
         // callback(str);
         //You can send a verification code request when you enter the four-digit verification code, etc.
       }
