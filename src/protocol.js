@@ -17,8 +17,4 @@ function toObjJson(v, method) {
     return JSON.stringify(value);
 }
 
-function toMove(n) {
-    return toObjJson(n, 'move');
-}
-
-export default {parser, toMove, toObjJson};
+export default {parser, toObjJson};

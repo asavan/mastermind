@@ -174,7 +174,6 @@ input:focus {
     display: flex;
     flex-direction: column;
     margin: auto;
-    height: 100%;
     max-width: 300px;
 }
 
@@ -184,7 +183,7 @@ input:focus {
    margin-top: 10px;
    columns: 2;
    column-fill: auto;
-   max-height: 250px;
+   height: 250px;
 }
 
 .row {
