@@ -2,7 +2,6 @@
 
 import {assert} from "./helper.js";
 
-
 const randomInteger = (min, max) => {
     let rand = min + Math.random() * (max - min);
     return Math.floor(rand);
@@ -37,16 +36,15 @@ function intersect_safe(a, b)
 
 function common(arr, str) {
     assert(arr.length === str.length, "Different size");
-    let count = 0;
+    let same = 0;
     const a = Array.from(arr).map((i) => parseInt(i, 10));
     const b = Array.from(str).map((i) => parseInt(i, 10));
 
-    console.log(a, b);
-    for (let i = 0; i < a.length; i++) {
+    for (let i = 0; i < a.length; ++i) {
         if(a[i] == b[i]) {
             a.splice(i, 1);
             b.splice(i, 1);
-            count++;
+            ++same;
             --i;
         }
     }
@@ -54,14 +52,12 @@ function common(arr, str) {
     b.sort();
     const c = intersect_safe(a, b);
 
-    const res = count * 10 + c.length;
-    console.log(a, b, c, res);
+    const res = same * 10 + c.length;
     return res;
 }
 
 function simpleBot(settings, game) {
     let result = [];
-    console.log("Start");
     for (let i = 0; i < settings.size; i++) {
         let cand = randomInteger(settings.min, settings.max);
         while (!settings.repeat && has(result, cand)) {
@@ -72,16 +68,19 @@ function simpleBot(settings, game) {
 
 
     let ans = 0;
-    for (let i = settings.size; i > 0 ; i--) {
+    for (let i = 0; i < settings.size; i++) {
         ans *= 10;
-        ans += result[i-1];
+        ans += result[i];
     }
 
     console.log("end", ans, result);
 
+    game.tellSecret(ans);
+
     const makeMove = function (num) {
         const res = common(result, num);
         game.takeResp(res);
+        return res;
     };
 
     return {

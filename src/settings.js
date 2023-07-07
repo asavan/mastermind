@@ -7,5 +7,7 @@ export default {
     logger: false,
     repeat: false,
     min: 1,
-    max: 6
+    max: 6,
+    maxMoves: 10,
+    cheating: false
 }

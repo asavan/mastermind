@@ -14,6 +14,10 @@ function updateStr(inputArr, size) {
     }
 }
 
+function validateVerdict(secret, verdict, lastGuess) {
+    return true;
+}
+
 function handleInput(window, document, settings, callback) {
 
     const inputArr = document.getElementsByTagName("input");
@@ -36,10 +40,9 @@ function handleInput(window, document, settings, callback) {
     window.addEventListener("keyup", (e) => {
       const curIndex = parseInt(e.target.getAttribute("data-index")); //Get the index of the current input
       //If you click BackSpace to delete, delete all here
-
-      log(e.key, logger);
-      log(e.code, logger);
-      log(e.keyCode, logger);
+//      log(e.key, logger);
+//      log(e.code, logger);
+//      log(e.keyCode, logger);
       if (e.key == 'Enter') {
         if (str.length === size) {
             // clear
@@ -105,8 +108,13 @@ export default function game(window, document, settings) {
     const listItem = document.querySelector('#result-row');
     const resultTable = document.querySelector('.result');
     const inputArr = document.getElementsByTagName("input");
+    const inputBox = document.querySelector('.input-div');
+
+    let movesLeft = settings.maxMoves;
 
     let lastTry = null;
+    let lastGuess = null;
+    let secret;
 
     function clear() {
         for (const input of inputArr) {
@@ -116,6 +124,29 @@ export default function game(window, document, settings) {
         inputArr[0].focus();
     }
 
+    function onGameEnd(message1, message2) {
+        const h2 = overlay.querySelector('h2');
+        h2.textContent = message1;
+        const content = overlay.querySelector('.content');
+        content.textContent = message2;
+        overlay.classList.add('show');
+        btnInstall.classList.remove('hidden2');
+        inputBox.classList.add('hidden');
+        handlers['gameover']();
+    }
+
+    close.addEventListener("click", function (e) {
+        e.preventDefault();
+        overlay.classList.remove("show");
+    }, false);
+
+
+    function onWin() {
+        onGameEnd("You win", "In " + (settings.maxMoves - movesLeft) + " moves");
+    }
+    function onLoose() {
+        onGameEnd("You loose", "Secret was " + secret);
+    }
 
     const handlers = {
         'player': stub,
@@ -132,30 +163,54 @@ export default function game(window, document, settings) {
 
     async function onMove(num) {
         console.log(num);
+        lastGuess = num;
         const li = listItem.content.cloneNode(true);
         const request = li.querySelector('.request');
         request.textContent = num;
         lastTry = resultTable.appendChild(li.firstElementChild);
         await delay(200);
         clear();
-        await handlers['player'](num);
+        movesLeft--;
+        const ans = await handlers['player'](num);
     }
 
     function takeResp(verdict) {
         console.log(verdict);
+        if (secret) {
+            const isOk = validateVerdict(secret, verdict, lastGuess);
+            assert(settings.cheating || isOk, "Cheating detected");
+        } else {
+            assert(settings.cheating, "Cheating detected2");
+        }
         if (lastTry) {
-           console.log(lastTry);
            const resp = lastTry.querySelector('.response');
            resp.textContent = String(verdict).padStart(2, '0');
         } else {
             assert(false, verdict);
         }
+        if (verdict == settings.size*10) {
+            onWin();
+            return;
+        }
+        if (movesLeft <= 0) {
+            onLoose();
+        }
+    }
+
+    function tellSecret(s) {
+        if (!settings.cheating) {
+            assert(s, "Not valid secret");
+            assert(!secret || secret == s, "Unable to change secret");
+        }
+        secret = s;
+        console.log(secret);
     }
 
     handleInput(window, document, settings, onMove);
 
     return {
        on: on,
-       takeResp: takeResp
+       takeResp: takeResp,
+       tellSecret: tellSecret
     }
 }
