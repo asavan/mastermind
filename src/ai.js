@@ -59,9 +59,9 @@ function common(arr, str) {
 function simpleBot(settings, game) {
     let result = [];
     for (let i = 0; i < settings.size; i++) {
-        let cand = randomInteger(settings.min, settings.max);
+        let cand = randomInteger(settings.min, settings.max + 1);
         while (!settings.repeat && has(result, cand)) {
-            cand = randomInteger(settings.min, settings.max);
+            cand = randomInteger(settings.min, settings.max + 1);
         }
         result.push(cand);
     }

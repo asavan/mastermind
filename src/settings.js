@@ -8,6 +8,6 @@ export default {
     repeat: false,
     min: 1,
     max: 6,
-    maxMoves: 10,
+    maxMoves: 8,
     cheating: false
 }
