@@ -44,11 +44,21 @@ function focusNextIndex(curIndex, inputArr, settings) {
     }
 }
 
+
+
 function handleInput(window, document, settings, callback) {
 
     const inputArr = document.getElementsByTagName("input");
     const logger = document.getElementsByClassName('log')[0];
     const size = settings.size;
+
+    function clear() {
+        for (const input of inputArr) {
+            input.value = "";
+        }
+        updateStr(inputArr, settings.size);
+        inputArr[0].focus();
+    }
 
 
     window.onkeyup = (e) => {
@@ -61,6 +71,7 @@ function handleInput(window, document, settings, callback) {
             callback(str);
             // clear
             str = "";
+            clear();
         }
 
         return false;
@@ -94,6 +105,7 @@ function handleInput(window, document, settings, callback) {
             if (validateInput(settings, str)) {
                 callback(str);
                 str = "";
+                clear();
             }
         }, 200);
       }
@@ -112,7 +124,8 @@ export default function game(window, document, settings) {
     const inputArr = document.getElementsByTagName("input");
     const inputBox = document.querySelector('.input-div');
 
-    let movesLeft = settings.maxMoves;
+    let movesLeft = settings.maxMoves + 1; // plus one for initial setup
+    let opponentMovesLeft = settings.maxMoves + 1;
 
     let lastTry = null;
     let lastGuess = null;
@@ -169,6 +182,12 @@ export default function game(window, document, settings) {
         inputArr[0].focus();
     }
 
+    function tryEnableInputs() {
+        if (opponentMovesLeft <= movesLeft) {
+            enableSend();
+        }
+    }
+
     const handlers = {
         'player': stub,
         'sendSecret': stub,
@@ -188,16 +207,18 @@ export default function game(window, document, settings) {
         const request = li.querySelector('.request');
         request.textContent = num;
         lastTry = resultTable.appendChild(li.firstElementChild);
-        clear();
-        movesLeft--;
+        --movesLeft;
         const ans = await handlers['player'](num);
-        enableSend();
+        tryEnableInputs();
     }
 
     async function setMyNumber(num) {
+        disableSend();
         myNumber = num;
+        --movesLeft;
         const ans = await handlers['sendSecret'](num);
         handleInput(window, document, settings, onMove);
+        tryEnableInputs();
         return ans;
     }
 
@@ -232,6 +253,8 @@ export default function game(window, document, settings) {
 
         secret = s;
         console.log(secret);
+        --opponentMovesLeft;
+        tryEnableInputs();
     }
 
     if (settings.currentMode === 'ai') {
@@ -242,7 +265,9 @@ export default function game(window, document, settings) {
 
     async function testSecret(num) {
         const res = common(myNumber, num);
+        --opponentMovesLeft;
         await handlers['sendAnswer'](res);
+        tryEnableInputs();
         return res;
     }
 

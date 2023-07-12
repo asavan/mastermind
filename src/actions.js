@@ -2,15 +2,15 @@
 
 function init(game) {
     return {
-        'player': (n) => {
+        'player': async (n) => {
           console.log("try to move " + JSON.stringify(n));
-          game.testSecret(n);
+          return game.testSecret(n);
         },
-        'sendSecret': (secret) => {
-            game.tellSecret(secret);
+        'sendSecret': async (secret) => {
+            return game.tellSecret(secret);
         },
-        'sendAnswer': (ans) => {
-            game.takeResp(ans);
+        'sendAnswer': async (ans) => {
+            return game.takeResp(ans);
         }
     }
 }
