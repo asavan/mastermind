@@ -106,6 +106,20 @@ const connectionFunc = function (settings) {
         const socketUrl = getWebSocketUrl(settings.wh, host);
         const color = settings.color;
         const signaling = createSignalingChannel(socketUrl, color, serverOnly);
+
+        if (serverOnly) {
+            signaling.onmessage = async function(text) {
+                    console.log("Websocket message received: " + text);
+                    const json = JSON.parse(text);
+                    if (json.from === user) {
+                        console.error("same user");
+                        return;
+                    }
+                    handlers['server_message'](json);
+            }
+            return;
+        }
+
         const peerConnection = new RTCPeerConnection();
         window.pc = peerConnection;
 

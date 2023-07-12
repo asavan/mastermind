@@ -180,10 +180,9 @@ input:focus {
 .result {
    flex: 1 0 auto;
    list-style-type: none;
-   margin-top: 10px;
    columns: 2;
    column-fill: auto;
-   height: 200px;
+   height: 190px;
 }
 
 .row {

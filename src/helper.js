@@ -26,6 +26,18 @@ export function removeElem(el) {
     }
 }
 
+export function log(settings, message, el) {
+    if (settings.logger) {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+    }
+    console.log(message);
+}
+
+
 function stringToBoolean(string){
     switch(string.toLowerCase().trim()){
         case "true": case "yes": case "1": return true;

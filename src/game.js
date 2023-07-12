@@ -1,6 +1,7 @@
 "use strict"; // jshint ;_;
 
 import {delay, assert} from "./helper.js";
+import {common, toInt} from "./solver.js";
 
 function stub() {
 }
@@ -18,35 +19,47 @@ function validateVerdict(secret, verdict, lastGuess) {
     return true;
 }
 
+function validateInput(settings, str) {
+    if (str.length != settings.size) {
+        return false;
+    }
+    for (const ch of str) {
+        const digit = parseInt(ch, 10);
+        if (isNaN(digit) || digit < settings.min || digit > settings.max) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function focusNextIndex(curIndex, inputArr, settings) {
+    for (let i = 0; i < inputArr.length; ++i) {
+        const index = (i + curIndex + 1) % inputArr.length;
+        const digit = parseInt(inputArr[index].value, 10);
+        if (isNaN(digit) || digit < settings.min || digit > settings.max) {
+            inputArr[index].value = "";
+            inputArr[index].focus();
+            return index;
+        }
+    }
+}
+
 function handleInput(window, document, settings, callback) {
 
     const inputArr = document.getElementsByTagName("input");
     const logger = document.getElementsByClassName('log')[0];
     const size = settings.size;
 
-    function log(message, el) {
-        if (settings.logger) {
-        if (typeof message == 'object') {
-            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
-        } else {
-            logger.innerHTML += message + '<br />';
-        }
-        } else {
-            console.log(message);
-        }
-    }
 
-
-    window.addEventListener("keyup", (e) => {
-      const curIndex = parseInt(e.target.getAttribute("data-index")); //Get the index of the current input
-      //If you click BackSpace to delete, delete all here
-//      log(e.key, logger);
-//      log(e.code, logger);
-//      log(e.keyCode, logger);
+    window.onkeyup = (e) => {
+      const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
+      if (isNaN(curIndex)) {
+        return false;
+      }
       if (e.key == 'Enter') {
-        if (str.length === size) {
-            // clear
+        if (validateInput(settings, str)) {
             callback(str);
+            // clear
             str = "";
         }
 
@@ -73,40 +86,18 @@ function handleInput(window, document, settings, callback) {
         return false;
       }
 
-      const nextIndex = curIndex + 1;
       updateStr(inputArr, size);
-      //When it is judged that there is not enough four-digit verification code
-      if (curIndex < size - 1  && str.length < size) {
-        for (let i = 0; i <= curIndex; i++) {
-          // Judge whether the previous one is free or there is no input, if it exists, adjust the focus to the front, and give the back of the input to the front one, otherwise skip to the next one
-          if (!inputArr[i].value) {
-            inputArr[curIndex].blur();
-            inputArr[i].value = inputArr[curIndex].value;
-            var index = i + 1;
-            inputArr[index].focus();
-            inputArr[curIndex].value = "";
-            return;
-          } else {
-            // var nextIndex = Number(curIndex) + 1;
-            inputArr[nextIndex].focus();
-          }
-        }
+      if (!validateInput(settings, str)) {
+        focusNextIndex(curIndex, inputArr, settings);
       } else {
-        if (str.length === size) {
-            setTimeout(() => {
-            if (str.length === size) {
+        setTimeout(() => {
+            if (validateInput(settings, str)) {
                 callback(str);
                 str = "";
             }
-            }, 200);
-            // clear
-        }
-
-        // callback(str);
-        //You can send a verification code request when you enter the four-digit verification code, etc.
+        }, 200);
       }
-    });
-
+    };
 }
 
 
@@ -125,7 +116,9 @@ export default function game(window, document, settings) {
 
     let lastTry = null;
     let lastGuess = null;
+    let isSending = false;
     let secret;
+    let myNumber;
 
     function clear() {
         for (const input of inputArr) {
@@ -159,12 +152,27 @@ export default function game(window, document, settings) {
         onGameEnd("You loose", "Secret was " + secret);
     }
 
+    function disableSend() {
+        isSending = true;
+        for (const input of inputArr) {
+            // input.value = "";
+            input.disabled = true;
+        }
+    }
+
+    function enableSend() {
+        isSending = false;
+        for (const input of inputArr) {
+            // input.value = "";
+            input.disabled = false;
+        }
+        inputArr[0].focus();
+    }
+
     const handlers = {
         'player': stub,
-        'guesserMove': stub,
-        'meMove': stub,
-        'aiMove': stub,
-        'aiHint': stub,
+        'sendSecret': stub,
+        'sendAnswer': stub,
         'gameover': stub
     }
 
@@ -174,15 +182,23 @@ export default function game(window, document, settings) {
 
     async function onMove(num) {
         console.log(num);
+        disableSend();
         lastGuess = num;
         const li = listItem.content.cloneNode(true);
         const request = li.querySelector('.request');
         request.textContent = num;
         lastTry = resultTable.appendChild(li.firstElementChild);
-        await delay(200);
         clear();
         movesLeft--;
         const ans = await handlers['player'](num);
+        enableSend();
+    }
+
+    async function setMyNumber(num) {
+        myNumber = num;
+        const ans = await handlers['sendSecret'](num);
+        handleInput(window, document, settings, onMove);
+        return ans;
     }
 
     function takeResp(verdict) {
@@ -213,15 +229,28 @@ export default function game(window, document, settings) {
             assert(s, "Not valid secret");
             assert(!secret || secret == s, "Unable to change secret");
         }
+
         secret = s;
         console.log(secret);
     }
 
-    handleInput(window, document, settings, onMove);
+    if (settings.currentMode === 'ai') {
+        // handleInput(window, document, settings, onMove);
+    } else if (settings.currentMode === 'net') {
+        handleInput(window, document, settings, setMyNumber);
+    }
+
+    async function testSecret(num) {
+        const res = common(myNumber, num);
+        await handlers['sendAnswer'](res);
+        return res;
+    }
 
     return {
        on: on,
        takeResp: takeResp,
-       tellSecret: tellSecret
+       tellSecret: tellSecret,
+       testSecret: testSecret,
+       setMyNumber: setMyNumber
     }
 }

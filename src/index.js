@@ -16,8 +16,8 @@ function starter(window, document) {
         import("./net_mode.js").then(netMode => {
             netMode.default(window, document, settings, gameFunction);
         });
-    } else if (settings.currentMode === 'server') {
-        import("./serverMode.js").then(serverMode => {
+    } else if (settings.currentMode === 'server' || settings.color == 'black') {
+        import("./server_mode.js").then(serverMode => {
             settings.color = 'black';
             serverMode.default(window, document, settings);
         });
