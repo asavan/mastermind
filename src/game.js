@@ -15,8 +15,9 @@ function updateStr(inputArr, size) {
     }
 }
 
-function validateVerdict(secret, verdict, lastGuess) {
-    return true;
+function validateVerdict(verdict, secret, lastGuess) {
+    const res = common(secret, lastGuess);
+    return verdict === res;
 }
 
 function validateInput(settings, str) {
@@ -126,6 +127,7 @@ export default function game(window, document, settings) {
 
     let movesLeft = settings.maxMoves + 1; // plus one for initial setup
     let opponentMovesLeft = settings.maxMoves + 1;
+    let opponentAlreadyWin = false;
 
     let lastTry = null;
     let lastGuess = null;
@@ -159,8 +161,13 @@ export default function game(window, document, settings) {
 
 
     function onWin() {
+        if (opponentAlreadyWin) {
+            onGameEnd("Draw", "In " + (settings.maxMoves - movesLeft) + " moves");
+            return;
+        }
         onGameEnd("You win", "In " + (settings.maxMoves - movesLeft) + " moves");
     }
+
     function onLoose() {
         onGameEnd("You loose", "Secret was " + secret);
     }
@@ -222,10 +229,10 @@ export default function game(window, document, settings) {
         return ans;
     }
 
-    function takeResp(verdict) {
+    async function takeResp(verdict) {
         console.log(verdict);
         if (secret) {
-            const isOk = validateVerdict(secret, verdict, lastGuess);
+            const isOk = validateVerdict(verdict, secret, lastGuess);
             assert(settings.cheating || isOk, "Cheating detected");
         } else {
             assert(settings.cheating, "Cheating detected2");
@@ -239,6 +246,9 @@ export default function game(window, document, settings) {
         if (verdict == settings.size*10) {
             onWin();
             return;
+        }
+        if (opponentAlreadyWin) {
+            onLoose();
         }
         if (movesLeft <= 0) {
             onLoose();
@@ -265,6 +275,7 @@ export default function game(window, document, settings) {
 
     async function testSecret(num) {
         const res = common(myNumber, num);
+        opponentAlreadyWin = ((res === settings.size*10) && (settings.currentMode !== 'ai'));
         --opponentMovesLeft;
         await handlers['sendAnswer'](res);
         tryEnableInputs();
