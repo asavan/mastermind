@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
 
         entry: {main: ["./src/index.js", "./src/css/style.css"]},
         output: {
-            path: path.resolve(__dirname, "../android_dist"),
+            path: path.resolve(__dirname, "../android/app/src/main/assets/www"),
             filename: "[name].[contenthash].js",
             clean: true
         },
@@ -38,7 +38,6 @@ module.exports = (env, argv) => {
             }), new CssMinimizerPlugin()],
         },
         plugins: [
-            new CleanWebpackPlugin(),
             new HTMLInlineCSSWebpackPlugin(),
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
@@ -54,8 +53,7 @@ module.exports = (env, argv) => {
                 patterns: [
                     { from: './src/images', to: './images' },
                     { from: './src/manifest.json', to: './' },
-                    { from: './.well-known', to: './well-known' },
-                    { from: 'src/bin', to: './' }
+                    { from: './.well-known', to: './well-known' }
                 ],
             })
         ]
