@@ -54,6 +54,13 @@ public class AndroidWebServerActivity extends Activity {
             b.put("currentMode", "net");
             btnUtils.addButtonBrowser(host, b, R.id.button1);
             btnUtils.addButtonTwa(host, b, R.id.button4, host);
+        }
+        {
+            Map<String, String> b = new LinkedHashMap<>();
+            b.put("color", "blue");
+            b.put("wh", hostUtils.getSocketHost(LOCAL_IP));
+            b.put("sh", host);
+            b.put("currentMode", "net");
             btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCALHOST), b, R.id.button7);
             btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), b, R.id.button8);
             btnUtils.addButtonWebView(WEB_VIEW_URL, b, R.id.button9);

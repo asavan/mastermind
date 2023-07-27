@@ -128,12 +128,14 @@ export default function game(window, document, settings) {
     let movesLeft = settings.maxMoves + 1; // plus one for initial setup
     let opponentMovesLeft = settings.maxMoves + 1;
     let opponentAlreadyWin = false;
+    let meAlreadyWin = false;
 
     let lastTry = null;
     let lastGuess = null;
     let isSending = false;
     let secret;
     let myNumber;
+    let score = 0;
 
     function clear() {
         for (const input of inputArr) {
@@ -161,15 +163,18 @@ export default function game(window, document, settings) {
 
 
     function onWin() {
-        if (opponentAlreadyWin) {
-            onGameEnd("Draw", "In " + (settings.maxMoves - movesLeft) + " moves");
-            return;
-        }
+        score += 1;
         onGameEnd("You win", "In " + (settings.maxMoves - movesLeft) + " moves");
     }
 
     function onLoose() {
+        score -= 1;
         onGameEnd("You loose", "Secret was " + secret);
+    }
+
+    function onDraw(movesCount) {
+        score += 0.5;
+        onGameEnd("Draw", "In " + movesCount + " moves");
     }
 
     function disableSend() {
@@ -229,6 +234,29 @@ export default function game(window, document, settings) {
         return ans;
     }
 
+    function checkWinner() {
+        if (!meAlreadyWin && !opponentAlreadyWin) {
+            if (movesLeft <= 0) {
+               onLoose();
+            }
+            return;
+        }
+        const myMovesCount = settings.maxMoves - movesLeft;
+        const opponentMovesCount = settings.maxMoves - opponentMovesLeft;
+
+        if (meAlreadyWin && opponentAlreadyWin && myMovesCount === opponentMovesCount) {
+            onDraw(myMovesCount);
+        }
+
+        if (meAlreadyWin && myMovesCount <= opponentMovesCount) {
+            onWin();
+        }
+
+        if (opponentAlreadyWin && opponentMovesCount <= myMovesCount) {
+            onLoose();
+        }
+    }
+
     async function takeResp(verdict) {
         console.log(verdict);
         if (secret) {
@@ -244,15 +272,9 @@ export default function game(window, document, settings) {
             assert(false, verdict);
         }
         if (verdict == settings.size*10) {
-            onWin();
-            return;
+            meAlreadyWin = true;
         }
-        if (opponentAlreadyWin) {
-            onLoose();
-        }
-        if (movesLeft <= 0) {
-            onLoose();
-        }
+        checkWinner();
     }
 
     function tellSecret(s) {
@@ -279,14 +301,18 @@ export default function game(window, document, settings) {
         --opponentMovesLeft;
         await handlers['sendAnswer'](res);
         tryEnableInputs();
+        checkWinner();
         return res;
     }
+
+    const getScore = () => score;
 
     return {
        on: on,
        takeResp: takeResp,
        tellSecret: tellSecret,
        testSecret: testSecret,
-       setMyNumber: setMyNumber
+       setMyNumber: setMyNumber,
+       getScore: getScore
     }
 }
