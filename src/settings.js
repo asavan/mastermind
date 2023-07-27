@@ -4,7 +4,7 @@ export default {
     wsPort : 8088,
     color: 'blue',
     size: 4,
-    logger: false,
+    logger: true,
     repeat: false,
     min: 1,
     max: 6,

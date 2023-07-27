@@ -29,9 +29,9 @@ export function removeElem(el) {
 export function log(settings, message, el) {
     if (settings.logger) {
         if (typeof message == 'object') {
-            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+            el.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
         } else {
-            logger.innerHTML += message + '<br />';
+            el.innerHTML += message + '<br />';
         }
     }
     console.log(message);

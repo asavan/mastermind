@@ -14,6 +14,7 @@ const handlers = {
     'socket_open': stub,
     'socket_close': stub,
     'close': stub,
+    'error': stub,
 }
 
 
@@ -74,7 +75,7 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
         }
     }
     ws.onerror = function (e) {
-        console.log("Websocket error");
+        handlers['error']("Websocket error " + socketUrl);
     }
     return result;
 }

@@ -4,13 +4,17 @@ import connectionFunc from "./connection.js";
 import qrRender from "./qrcode.js";
 import protocol from "./protocol.js";
 import actionsFunc from "./actions.js";
-import {removeElem} from "./helper.js";
+import {removeElem, log} from "./helper.js";
 
 export default function netMode(window, document, settings, gameFunction) {
     return new Promise((resolve, reject) => {
         const connection = connectionFunc(settings);
         const color = settings.color;
         const staticHost = settings.sh || window.location.href;
+        const logger = document.getElementsByClassName('log')[0];
+        connection.on('error', (e) => {
+            log(settings, e, logger);
+        });
         connection.on('socket_open', () => {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
@@ -30,7 +34,7 @@ export default function netMode(window, document, settings, gameFunction) {
         try {
             connection.connect(window.location.hostname);
         } catch (e) {
-            console.log(e);
+            log(settings, e, logger);
             reject(e);
         }
 

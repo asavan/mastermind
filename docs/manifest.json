@@ -3,18 +3,18 @@
 	"short_name": "mastermind",
     "icons": [
       {
-        "src": "./images/matrix_digits.png",
+        "src": "./images/icon512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "any maskable"
       },
       {
-        "src": "./images/matrix_square.png",
+        "src": "./images/icon192.png",
         "sizes": "192x192",
         "type": " image/png"
       },
       {
-        "src": "./images/matrix_digits.png",
+        "src": "./images/icon512.png",
         "sizes": "512x512",
         "type": "image/png"
       }
