@@ -27,7 +27,7 @@ function oneQrCode(url, code, color, qrcontainer, document) {
 }
 
 export default function server(window, document, settings) {
-    const connection = connectionFunc(settings);
+    const connection = connectionFunc(settings, window.location);
     const staticHost = settings.sh || window.location.href;
     let code = {};
     {
@@ -51,7 +51,7 @@ export default function server(window, document, settings) {
     });
 
     try {
-        connection.connect(window.location.hostname);
+        connection.connect();
     } catch (e) {
         console.log(e);
     }

@@ -17,6 +17,18 @@ const handlers = {
     'error': stub,
 }
 
+function stringifyEvent(e) {
+  const obj = {};
+  for (let k in e) {
+    obj[k] = e[k];
+  }
+  return JSON.stringify(obj, (k, v) => {
+    if (v instanceof Node) return 'Node';
+    if (v instanceof Window) return 'Window';
+    return v;
+  }, ' ');
+}
+
 
 function sendNegotiation(type, sdp, ws) {
     const json = {from: user, to: user2, action: type, data: sdp};
@@ -42,9 +54,10 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
         return sendNegotiation(type, sdp, ws);
     }
     const close = () => {
+        // iphone fires "onerror" on close socket
+        handlers['error'] = stub;
         ws.close();
     }
-
 
     const onmessage = stub;
     const result = {onmessage, send, close};
@@ -75,36 +88,36 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
         }
     }
     ws.onerror = function (e) {
-        handlers['error']("Websocket error " + socketUrl);
+        handlers['error'](stringifyEvent(e));
     }
     return result;
 }
 
-const connectionFunc = function (settings) {
+const connectionFunc = function (settings, location) {
 
     const serverOnly = settings.currentMode === 'server';
-    // let ws = null;
-
 
     function on(name, f) {
         handlers[name] = f;
     }
 
-
-    function getWebSocketUrl(socketUrl, host) {
-        if (socketUrl) {
-            return socketUrl;
+    function getWebSocketUrl() {
+        if (settings.wh) {
+            return settings.wh;
         }
-        if (window.location.protocol === 'https:') {
+        if (location.protocol === 'https:') {
             return null;
         }
-        return "ws://" + host + ":" + settings.wsPort
+        return "ws://" + location.hostname + ":" + settings.wsPort
     }
 
 // inspired by http://udn.realityripple.com/docs/Web/API/WebRTC_API/Perfect_negotiation#Implementing_perfect_negotiation
 // and https://w3c.github.io/webrtc-pc/#perfect-negotiation-example
-    function connect(host) {
-        const socketUrl = getWebSocketUrl(settings.wh, host);
+    function connect() {
+        const socketUrl = getWebSocketUrl();
+        if (socketUrl == null) {
+            throw "Can't determine ws address";
+        }
         const color = settings.color;
         const signaling = createSignalingChannel(socketUrl, color, serverOnly);
 
@@ -156,7 +169,6 @@ const connectionFunc = function (settings) {
 
         peerConnection.ondatachannel = (ev) => {
           if (dataChannel == null || polite) {
-              console.log("new channel recieved");
               setupDataChannel(ev.channel, signaling);
           }
         };
@@ -175,7 +187,9 @@ const connectionFunc = function (settings) {
             }
 
             if (json.action === "candidate") {
-                processIce(json.data, peerConnection);
+                peerConnection.addIceCandidate(json.data).catch(e => {
+                    console.error(e)
+                });
             } else if (json.action === "description") {
                 const description = json.data;
                 const readyForOffer =
@@ -195,7 +209,7 @@ const connectionFunc = function (settings) {
                     signaling.send("description", peerConnection.localDescription);
                 }
             } else if (json.action === "connected") {
-                openDataChannel(peerConnection, signaling);
+                setupDataChannel(peerConnection.createDataChannel("gamechannel"), signaling);
             } else if (json.action === "close") {
                 // need for server
             } else {
@@ -241,18 +255,6 @@ const connectionFunc = function (settings) {
         }
         dataChannel.send(messageBody);
         return isConnected;
-    }
-
-    function openDataChannel(pc, s) {
-        console.log("ch created");
-        setupDataChannel(pc.createDataChannel("gamechannel"), s);
-    }
-
-    function processIce(iceCandidate, peerConnection) {
-        console.log("------ PROCESSED ISE ------", iceCandidate);
-        return peerConnection.addIceCandidate(iceCandidate).catch(e => {
-            console.error(e)
-        });
     }
 
     return {connect, sendMessage, on, getOtherColor};

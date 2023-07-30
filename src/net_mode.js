@@ -8,7 +8,7 @@ import {removeElem, log} from "./helper.js";
 
 export default function netMode(window, document, settings, gameFunction) {
     return new Promise((resolve, reject) => {
-        const connection = connectionFunc(settings);
+        const connection = connectionFunc(settings, window.location);
         const color = settings.color;
         const staticHost = settings.sh || window.location.href;
         const logger = document.getElementsByClassName('log')[0];
@@ -31,19 +31,11 @@ export default function netMode(window, document, settings, gameFunction) {
             });
         });
 
-        try {
-            connection.connect(window.location.hostname);
-        } catch (e) {
-            log(settings, e, logger);
-            reject(e);
-        }
-
         connection.on('open', () => {
-            console.log("open");
             const game = gameFunction(window, document, settings);
             const actions = actionsFunc(game);
             connection.on('recv', (data) => {
-                console.log(data);
+                // console.log(data);
                 for (const [handlerName, callback] of Object.entries(actions)) {
                   protocol.parser(data, handlerName, callback);
                 }
@@ -53,5 +45,12 @@ export default function netMode(window, document, settings, gameFunction) {
             }
             resolve(game);
         });
+
+        try {
+            connection.connect();
+        } catch (e) {
+            log(settings, e, logger);
+            reject(e);
+        }
     });
 }

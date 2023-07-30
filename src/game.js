@@ -1,6 +1,6 @@
 "use strict"; // jshint ;_;
 
-import {delay, assert} from "./helper.js";
+import {delay, assert, pluralize} from "./helper.js";
 import {common, toInt} from "./solver.js";
 
 function stub() {
@@ -21,7 +21,7 @@ function validateVerdict(verdict, secret, lastGuess) {
 }
 
 function validateInput(settings, str) {
-    if (str.length != settings.size) {
+    if (str.length !== settings.size) {
         return false;
     }
     for (const ch of str) {
@@ -31,6 +31,21 @@ function validateInput(settings, str) {
         }
     }
     return true;
+}
+
+function validateInputCheckRepeat(settings, str) {
+    if (str.length !== settings.size) {
+        return false;
+    }
+    const unique = new Set();
+    for (const ch of str) {
+        const digit = parseInt(ch, 10);
+        if (isNaN(digit) || digit < settings.min || digit > settings.max) {
+            return false;
+        }
+        unique.add(digit);
+    }
+    return settings.repeat || unique.size === settings.size;
 }
 
 function focusNextIndex(curIndex, inputArr, settings) {
@@ -45,9 +60,7 @@ function focusNextIndex(curIndex, inputArr, settings) {
     }
 }
 
-
-
-function handleInput(window, document, settings, callback) {
+function handleInput(window, document, settings, callback, validator) {
 
     const inputArr = document.getElementsByTagName("input");
     const logger = document.getElementsByClassName('log')[0];
@@ -58,17 +71,17 @@ function handleInput(window, document, settings, callback) {
             input.value = "";
         }
         updateStr(inputArr, settings.size);
-        inputArr[0].focus();
+        // inputArr[0].focus();
     }
 
 
     window.onkeyup = (e) => {
       const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
-      if (isNaN(curIndex)) {
+      if (isNaN(curIndex) || curIndex < 0) {
         return false;
       }
       if (e.key == 'Enter') {
-        if (validateInput(settings, str)) {
+        if (validator(settings, str)) {
             callback(str);
             // clear
             str = "";
@@ -79,31 +92,28 @@ function handleInput(window, document, settings, callback) {
       }
       if (e.key == 'Backspace') {
         let prev = curIndex - 1;
-        if (curIndex === size - 1 && str[curIndex]) {
+        if ((curIndex === size - 1 && str[curIndex]) || prev < 0) {
             prev = curIndex;
         }
         console.log(curIndex, prev, str[curIndex]);
-        if(prev >= 0) {
-          inputArr[prev].value = "";
-          inputArr[prev].focus();
-        } else {
-          inputArr[0].focus();
-        }
+
+        inputArr[prev].value = "";
+        inputArr[prev].focus();
         updateStr(inputArr, size);
         return false;
       }
       //If the input is not a number
-      if (!(e.key >= '1' && e.key <= '6' || e.keyCode == 229)) {
+      if (!(e.key >= settings.min.toString() && e.key <= settings.max.toString() || e.keyCode == 229)) {
         inputArr[curIndex].value = "";
         return false;
       }
 
       updateStr(inputArr, size);
-      if (!validateInput(settings, str)) {
+      if (!validator(settings, str)) {
         focusNextIndex(curIndex, inputArr, settings);
       } else {
         setTimeout(() => {
-            if (validateInput(settings, str)) {
+            if (validator(settings, str)) {
                 callback(str);
                 str = "";
                 clear();
@@ -112,7 +122,6 @@ function handleInput(window, document, settings, callback) {
       }
     };
 }
-
 
 
 export default function game(window, document, settings) {
@@ -137,13 +146,6 @@ export default function game(window, document, settings) {
     let myNumber;
     let score = 0;
 
-    function clear() {
-        for (const input of inputArr) {
-            input.value = "";
-        }
-        updateStr(inputArr, settings.size);
-        inputArr[0].focus();
-    }
 
     function onGameEnd(message1, message2) {
         const h2 = overlay.querySelector('h2');
@@ -161,10 +163,9 @@ export default function game(window, document, settings) {
         overlay.classList.remove("show");
     }, false);
 
-
-    function onWin() {
+    function onWin(movesCount) {
         score += 1;
-        onGameEnd("You win", "In " + (settings.maxMoves - movesLeft) + " moves");
+        onGameEnd("You win", "In " + pluralize(movesCount, "move"));
     }
 
     function onLoose() {
@@ -174,7 +175,7 @@ export default function game(window, document, settings) {
 
     function onDraw(movesCount) {
         score += 0.5;
-        onGameEnd("Draw", "In " + movesCount + " moves");
+        onGameEnd("Draw", "In " + pluralize(movesCount, "move"));
     }
 
     function disableSend() {
@@ -229,7 +230,7 @@ export default function game(window, document, settings) {
         myNumber = num;
         --movesLeft;
         const ans = await handlers['sendSecret'](num);
-        handleInput(window, document, settings, onMove);
+        handleInput(window, document, settings, onMove, validateInput);
         tryEnableInputs();
         return ans;
     }
@@ -246,19 +247,21 @@ export default function game(window, document, settings) {
 
         if (meAlreadyWin && opponentAlreadyWin && myMovesCount === opponentMovesCount) {
             onDraw(myMovesCount);
+            return;
         }
 
         if (meAlreadyWin && myMovesCount <= opponentMovesCount) {
-            onWin();
+            onWin(myMovesCount);
+            return;
         }
 
         if (opponentAlreadyWin && opponentMovesCount <= myMovesCount) {
             onLoose();
+            return;
         }
     }
 
     async function takeResp(verdict) {
-        console.log(verdict);
         if (secret) {
             const isOk = validateVerdict(verdict, secret, lastGuess);
             assert(settings.cheating || isOk, "Cheating detected");
@@ -292,7 +295,7 @@ export default function game(window, document, settings) {
     if (settings.currentMode === 'ai') {
         // handleInput(window, document, settings, onMove);
     } else if (settings.currentMode === 'net') {
-        handleInput(window, document, settings, setMyNumber);
+        handleInput(window, document, settings, setMyNumber, validateInputCheckRepeat);
     }
 
     async function testSecret(num) {
@@ -306,6 +309,8 @@ export default function game(window, document, settings) {
     }
 
     const getScore = () => score;
+
+    enableSend();
 
     return {
        on: on,
