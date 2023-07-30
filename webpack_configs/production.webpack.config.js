@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HTMLInlineCSSWebpackPlugin from "html-inline-css-webpack-plugin";
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';

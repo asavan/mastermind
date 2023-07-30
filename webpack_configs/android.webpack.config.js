@@ -1,14 +1,17 @@
-const path = require("path");
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserJSPlugin = require('terser-webpack-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const webpack = require('webpack');
-const CopyPlugin = require('copy-webpack-plugin');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import HTMLInlineCSSWebpackPlugin from "html-inline-css-webpack-plugin";
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import TerserJSPlugin from 'terser-webpack-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin'
+import webpack from 'webpack'
 
-module.exports = (env, argv) => {
+
+const aConfig = (env, argv) => {
+    const dirname = path.dirname(fileURLToPath(import.meta.url));
     return {
 
         entry: {main: ["./src/index.js", "./src/css/style.css"]},
@@ -59,3 +62,5 @@ module.exports = (env, argv) => {
         ]
     }
 };
+
+export default aConfig;
