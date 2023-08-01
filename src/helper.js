@@ -1,12 +1,4 @@
 "use strict";
-export function getTemplateByName(name) {
-    return document.querySelector(name);
-}
-
-export function hide(selector) {
-    const el = document.querySelector(selector);
-    hideElem(el);
-}
 
 export function hideElem(el) {
     if (el) {

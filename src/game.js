@@ -1,7 +1,7 @@
 "use strict"; // jshint ;_;
 
 import {delay, assert, pluralize} from "./helper.js";
-import {common, toInt} from "./solver.js";
+import {common} from "./solver.js";
 
 function stub() {
 }
@@ -10,8 +10,8 @@ let str = "";
 
 function updateStr(inputArr, size) {
     str = "";
-    for (let j = 0; j < size; j++) {
-        str += inputArr[j].value;
+    for (const input of inputArr) {
+        str += input.value;
     }
 }
 
@@ -60,18 +60,15 @@ function focusNextIndex(curIndex, inputArr, settings) {
     }
 }
 
-function handleInput(window, document, settings, callback, validator) {
+function handleInput(window, inputArr, settings, callback, validator) {
 
-    const inputArr = document.getElementsByTagName("input");
-    const logger = document.getElementsByClassName('log')[0];
     const size = settings.size;
 
     function clear() {
         for (const input of inputArr) {
             input.value = "";
         }
-        updateStr(inputArr, settings.size);
-        // inputArr[0].focus();
+        updateStr(inputArr);
     }
 
 
@@ -84,7 +81,6 @@ function handleInput(window, document, settings, callback, validator) {
         if (validator(settings, str)) {
             callback(str);
             // clear
-            str = "";
             clear();
         }
 
@@ -99,7 +95,7 @@ function handleInput(window, document, settings, callback, validator) {
 
         inputArr[prev].value = "";
         inputArr[prev].focus();
-        updateStr(inputArr, size);
+        updateStr(inputArr);
         return false;
       }
       //If the input is not a number
@@ -108,19 +104,30 @@ function handleInput(window, document, settings, callback, validator) {
         return false;
       }
 
-      updateStr(inputArr, size);
+      updateStr(inputArr);
       if (!validator(settings, str)) {
         focusNextIndex(curIndex, inputArr, settings);
       } else {
         setTimeout(() => {
             if (validator(settings, str)) {
                 callback(str);
-                str = "";
                 clear();
             }
         }, 200);
       }
     };
+}
+
+function initField(window, document, settings) {
+     document.documentElement.style.setProperty('--field-size', settings.size);
+     const inputBox = document.querySelector('.input-div');
+     const cellItem = document.querySelector('#cell');
+     for(let i = 0; i < settings.size; ++i) {
+        const square = cellItem.content.cloneNode(true);
+        const input = square.querySelector('input');
+        input.dataset.index = i;
+        inputBox.appendChild(square.firstElementChild);
+     }
 }
 
 
@@ -131,8 +138,11 @@ export default function game(window, document, settings) {
 
     const listItem = document.querySelector('#result-row');
     const resultTable = document.querySelector('.result');
-    const inputArr = document.getElementsByTagName("input");
+
     const inputBox = document.querySelector('.input-div');
+    initField(window, document, settings);
+
+    const inputArr = inputBox.getElementsByTagName("input");
 
     let movesLeft = settings.maxMoves + 1; // plus one for initial setup
     let opponentMovesLeft = settings.maxMoves + 1;
@@ -213,7 +223,6 @@ export default function game(window, document, settings) {
     }
 
     async function onMove(num) {
-        console.log(num);
         disableSend();
         lastGuess = num;
         const li = listItem.content.cloneNode(true);
@@ -230,7 +239,7 @@ export default function game(window, document, settings) {
         myNumber = num;
         --movesLeft;
         const ans = await handlers['sendSecret'](num);
-        handleInput(window, document, settings, onMove, validateInput);
+        handleInput(window, inputArr, settings, onMove, validateInput);
         tryEnableInputs();
         return ans;
     }
@@ -292,10 +301,8 @@ export default function game(window, document, settings) {
         tryEnableInputs();
     }
 
-    if (settings.currentMode === 'ai') {
-        // handleInput(window, document, settings, onMove);
-    } else if (settings.currentMode === 'net') {
-        handleInput(window, document, settings, setMyNumber, validateInputCheckRepeat);
+    if (settings.currentMode === 'net') {
+        handleInput(window, inputArr, settings, setMyNumber, validateInputCheckRepeat);
     }
 
     async function testSecret(num) {

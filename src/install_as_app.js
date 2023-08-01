@@ -1,7 +1,7 @@
 "use strict";
-import {getTemplateByName, hideElem, showElem} from "./helper.js";
+import {hideElem, showElem} from "./helper.js";
 export default function install(window, document) {
-    const btnAdd = getTemplateByName('.butInstall');
+    const btnAdd = document.querySelector('.butInstall');
     let deferredPrompt;
     btnAdd.addEventListener('click', (e) => {
         e.preventDefault();

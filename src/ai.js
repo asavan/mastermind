@@ -34,7 +34,10 @@ function simpleBot(settings, game) {
 }
 
 export default function ai(window, document, settings, gameFunction) {
-    const game = gameFunction(window, document, settings);
-    const bot = simpleBot(settings, game);
-    game.on("player", (move) => bot.makeMove(move));
+    return new Promise((resolve, reject) => {
+        const game = gameFunction(window, document, settings);
+        const bot = simpleBot(settings, game);
+        game.on("player", (move) => bot.makeMove(move));
+        resolve(game);
+    });
 }

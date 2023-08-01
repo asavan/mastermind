@@ -40,12 +40,3 @@ export function common(arr, str) {
     const res = same * 10 + c.length;
     return res;
 }
-
-export function toInt(result) {
-    let ans = 0;
-    for (const digit of result) {
-        ans *= 10;
-        ans += digit;
-    }
-    return ans;
-}

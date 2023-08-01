@@ -88,6 +88,7 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
         }
     }
     ws.onerror = function (e) {
+        console.log(e);
         handlers['error'](stringifyEvent(e));
     }
     return result;

@@ -2,9 +2,16 @@
 
 import connectionFunc from "./connection.js";
 import qrRender from "./qrcode.js";
-import protocol from "./protocol.js";
 import actionsFunc from "./actions.js";
 import {removeElem, log} from "./helper.js";
+
+function toObjJson(v, method) {
+    const value = {
+        'method': method
+    };
+    value[method] = v;
+    return JSON.stringify(value);
+}
 
 export default function netMode(window, document, settings, gameFunction) {
     return new Promise((resolve, reject) => {
@@ -36,12 +43,15 @@ export default function netMode(window, document, settings, gameFunction) {
             const actions = actionsFunc(game);
             connection.on('recv', (data) => {
                 // console.log(data);
-                for (const [handlerName, callback] of Object.entries(actions)) {
-                  protocol.parser(data, handlerName, callback);
+                const obj = JSON.parse(data);
+                const res = obj[obj.method];
+                const callback = actions[obj.method];
+                if (typeof callback === 'function') {
+                    callback(res);
                 }
             });
             for (const [handlerName, callback] of Object.entries(actions)) {
-                game.on(handlerName, (n) => connection.sendMessage(protocol.toObjJson(n, handlerName)));
+                game.on(handlerName, (n) => connection.sendMessage(toObjJson(n, handlerName)));
             }
             resolve(game);
         });

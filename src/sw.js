@@ -1,4 +1,6 @@
-const CACHE = 'fallback';
+const version = "1.0.2";
+const CACHE = 'cache-only-' + version;
+
 self.addEventListener('install', function (evt) {
     evt.waitUntil(precache().then(function () {
         return self.skipWaiting();
