@@ -55,7 +55,7 @@ public class AndroidStaticAssetsServer extends NanoHTTPD {
             InputStream is = context.getResources().getAssets().open(fileWithFolder);
             return newChunkedResponse(Response.Status.OK, getMimeTypeForFile(file), is);
         } catch (IOException e) {
-            Log.e("AndroidStaticAssetsServer_TAG", "AndroidStaticAssetsServer", e);
+            Log.e("STATIC_SERVER_TAG", "AndroidStaticAssetsServer", e);
         }
         return notFound();
     }
