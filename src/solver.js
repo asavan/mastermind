@@ -2,22 +2,22 @@
 
 function intersect_safe(a, b)
 {
-  let ai=0, bi=0;
-  const result = [];
+    let ai=0, bi=0;
+    const result = [];
 
-  while( ai < a.length && bi < b.length )
-  {
-     if      (a[ai] < b[bi] ){ ai++; }
-     else if (a[ai] > b[bi] ){ bi++; }
-     else /* they're equal */
-     {
-       result.push(a[ai]);
-       ai++;
-       bi++;
-     }
-  }
+    while( ai < a.length && bi < b.length )
+    {
+        if      (a[ai] < b[bi] ){ ai++; }
+        else if (a[ai] > b[bi] ){ bi++; }
+        else /* they're equal */
+        {
+            result.push(a[ai]);
+            ai++;
+            bi++;
+        }
+    }
 
-  return result;
+    return result;
 }
 
 export function common(arr, str) {

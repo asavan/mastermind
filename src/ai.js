@@ -1,6 +1,6 @@
 "use strict";
 
-import {assert, delay} from "./helper.js";
+import {delay} from "./helper.js";
 
 const randomInteger = (min, max) => {
     let rand = min + Math.random() * (max - min);
@@ -18,8 +18,8 @@ function simpleBot(settings, game) {
         result.push(cand);
     }
 
-    game.tellSecret(result.join(''));
-    game.setMyNumber(result.join(''));
+    game.tellSecret(result.join(""));
+    game.setMyNumber(result.join(""));
 
     const makeMove = async function (num) {
         const res = await game.testSecret(num);
@@ -30,11 +30,11 @@ function simpleBot(settings, game) {
 
     return {
         makeMove: makeMove
-    }
+    };
 }
 
 export default function ai(window, document, settings, gameFunction) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const game = gameFunction(window, document, settings);
         const bot = simpleBot(settings, game);
         game.on("player", (move) => bot.makeMove(move));

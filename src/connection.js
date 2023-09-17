@@ -1,5 +1,5 @@
 "use strict";
-const colors = ['blue', 'red'];
+const colors = ["blue", "red"];
 
 function stub(message) {
     console.log("Stub " + message);
@@ -9,24 +9,24 @@ let user = "";
 let user2 = "";
 
 const handlers = {
-    'recv': stub,
-    'open': stub,
-    'socket_open': stub,
-    'socket_close': stub,
-    'close': stub,
-    'error': stub,
-}
+    "recv": stub,
+    "open": stub,
+    "socket_open": stub,
+    "socket_close": stub,
+    "close": stub,
+    "error": stub,
+};
 
 function stringifyEvent(e) {
-  const obj = {};
-  for (let k in e) {
-    obj[k] = e[k];
-  }
-  return JSON.stringify(obj, (k, v) => {
-    if (v instanceof Node) return 'Node';
-    if (v instanceof Window) return 'Window';
-    return v;
-  }, ' ');
+    const obj = {};
+    for (let k in e) {
+        obj[k] = e[k];
+    }
+    return JSON.stringify(obj, (k, v) => {
+        if (v instanceof Node) return "Node";
+        if (v instanceof Window) return "Window";
+        return v;
+    }, " ");
 }
 
 
@@ -52,29 +52,29 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
 
     const send = (type, sdp) => {
         return sendNegotiation(type, sdp, ws);
-    }
+    };
     const close = () => {
         // iphone fires "onerror" on close socket
-        handlers['error'] = stub;
+        handlers["error"] = stub;
         ws.close();
-    }
+    };
 
     const onmessage = stub;
     const result = {onmessage, send, close};
 
     ws.onopen = function (e) {
-        console.log("Websocket opened");
-        handlers['socket_open']();
+        console.log("Websocket opened", e);
+        handlers["socket_open"]();
         if (!serverOnly) {
             user = color;
             user2 = getOtherColor(color);
             sendNegotiation("connected", {color: user}, ws);
         }
-    }
+    };
     ws.onclose = function (e) {
-        console.log("Websocket closed");
-        handlers['socket_close']();
-    }
+        console.log("Websocket closed", e);
+        handlers["socket_close"]();
+    };
 
     ws.onmessage = function (e) {
         if (e.data instanceof Blob) {
@@ -86,17 +86,17 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
         } else {
             result.onmessage(e.data);
         }
-    }
+    };
     ws.onerror = function (e) {
         console.log(e);
-        handlers['error'](stringifyEvent(e));
-    }
+        handlers["error"](stringifyEvent(e));
+    };
     return result;
 }
 
 const connectionFunc = function (settings, location) {
 
-    const serverOnly = settings.currentMode === 'server';
+    const serverOnly = settings.currentMode === "server";
 
     function on(name, f) {
         handlers[name] = f;
@@ -106,14 +106,14 @@ const connectionFunc = function (settings, location) {
         if (settings.wh) {
             return settings.wh;
         }
-        if (location.protocol === 'https:') {
+        if (location.protocol === "https:") {
             return null;
         }
-        return "ws://" + location.hostname + ":" + settings.wsPort
+        return "ws://" + location.hostname + ":" + settings.wsPort;
     }
 
-// inspired by http://udn.realityripple.com/docs/Web/API/WebRTC_API/Perfect_negotiation#Implementing_perfect_negotiation
-// and https://w3c.github.io/webrtc-pc/#perfect-negotiation-example
+    // inspired by http://udn.realityripple.com/docs/Web/API/WebRTC_API/Perfect_negotiation#Implementing_perfect_negotiation
+    // and https://w3c.github.io/webrtc-pc/#perfect-negotiation-example
     function connect() {
         const socketUrl = getWebSocketUrl();
         if (socketUrl == null) {
@@ -124,54 +124,54 @@ const connectionFunc = function (settings, location) {
 
         if (serverOnly) {
             signaling.onmessage = async function(text) {
-                    console.log("Websocket message received: " + text);
-                    const json = JSON.parse(text);
-                    if (json.from === user) {
-                        console.error("same user");
-                        return;
-                    }
-                    handlers['server_message'](json);
-            }
+                console.log("Websocket message received: " + text);
+                const json = JSON.parse(text);
+                if (json.from === user) {
+                    console.error("same user");
+                    return;
+                }
+                handlers["server_message"](json);
+            };
             return;
         }
 
         const peerConnection = new RTCPeerConnection();
-        window.pc = peerConnection;
+        // window.pc = peerConnection;
 
         peerConnection.onicecandidate = function (e) {
             if (!e) return;
             console.log("candidate", e.candidate);
             signaling.send("candidate", e.candidate);
-        }
+        };
         peerConnection.oniceconnectionstatechange = () => {
-          if (peerConnection.iceConnectionState === "failed") {
-            console.error("failed");
-            peerConnection.restartIce();
-          }
+            if (peerConnection.iceConnectionState === "failed") {
+                console.error("failed");
+                peerConnection.restartIce();
+            }
         };
         let makingOffer = false;
-        const polite = color === 'red';
+        const polite = color === "red";
 
         let ignoreOffer = false;
         let isSettingRemoteAnswerPending = false;
 
         peerConnection.onnegotiationneeded = async () => {
-          try {
-            makingOffer = true;
-            console.log("make offer");
-            await peerConnection.setLocalDescription();
-            signaling.send("description", peerConnection.localDescription);
-          } catch(err) {
-            console.error(err);
-          } finally {
-            makingOffer = false;
-          }
-        }
+            try {
+                makingOffer = true;
+                console.log("make offer");
+                await peerConnection.setLocalDescription();
+                signaling.send("description", peerConnection.localDescription);
+            } catch(err) {
+                console.error(err);
+            } finally {
+                makingOffer = false;
+            }
+        };
 
         peerConnection.ondatachannel = (ev) => {
-          if (dataChannel == null || polite) {
-              setupDataChannel(ev.channel, signaling);
-          }
+            if (dataChannel == null || polite) {
+                setupDataChannel(ev.channel, signaling);
+            }
         };
 
         signaling.onmessage = async function(text) {
@@ -183,24 +183,24 @@ const connectionFunc = function (settings, location) {
             }
 
             if (serverOnly) {
-                handlers['server_message'](json);
+                handlers["server_message"](json);
                 return;
             }
 
             if (json.action === "candidate") {
                 peerConnection.addIceCandidate(json.data).catch(e => {
-                    console.error(e)
+                    console.error(e);
                 });
             } else if (json.action === "description") {
                 const description = json.data;
                 const readyForOffer =
                 !makingOffer &&
-                (pc.signalingState == "stable" || isSettingRemoteAnswerPending);
+                (peerConnection.signalingState == "stable" || isSettingRemoteAnswerPending);
                 const offerCollision = description.type == "offer" && !readyForOffer;
                 ignoreOffer = !polite && offerCollision;
                 if (ignoreOffer) {
-                  console.error("ignore");
-                  return;
+                    console.error("ignore");
+                    return;
                 }
                 isSettingRemoteAnswerPending = description.type == "answer";
                 await peerConnection.setRemoteDescription(description);
@@ -216,7 +216,7 @@ const connectionFunc = function (settings, location) {
             } else {
                 console.log("Unknown type " + json.action);
             }
-        }
+        };
     }
 
     let dataChannel = null;
@@ -225,7 +225,7 @@ const connectionFunc = function (settings, location) {
     function setupDataChannel(c, signaling) {
         dataChannel = c;
         dataChannel.onmessage = function (e) {
-            handlers['recv'](e.data);
+            handlers["recv"](e.data);
         };
 
         dataChannel.onopen = function () {
@@ -233,7 +233,7 @@ const connectionFunc = function (settings, location) {
             isConnected = true;
             signaling.send("close", {});
             signaling.close();
-            handlers['open']();
+            handlers["open"]();
         };
 
         dataChannel.onclose = function () {
@@ -242,7 +242,7 @@ const connectionFunc = function (settings, location) {
         };
 
         dataChannel.onerror = function () {
-            console.log("DC ERROR!!!")
+            console.log("DC ERROR!!!");
         };
     }
 

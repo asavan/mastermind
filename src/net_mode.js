@@ -7,7 +7,7 @@ import {removeElem, log} from "./helper.js";
 
 function toObjJson(v, method) {
     const value = {
-        'method': method
+        "method": method
     };
     value[method] = v;
     return JSON.stringify(value);
@@ -18,39 +18,39 @@ export default function netMode(window, document, settings, gameFunction) {
         const connection = connectionFunc(settings, window.location);
         const color = settings.color;
         const staticHost = settings.sh || window.location.href;
-        const logger = document.getElementsByClassName('log')[0];
-        connection.on('error', (e) => {
+        const logger = document.getElementsByClassName("log")[0];
+        connection.on("error", (e) => {
             log(settings, e, logger);
         });
-        connection.on('socket_open', () => {
+        connection.on("socket_open", () => {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const url = new URL(staticHost);
             url.search = urlParams;
-            url.searchParams.delete('wh');
-            url.searchParams.delete('sh');
-            url.searchParams.set('color', connection.getOtherColor(color));
-            url.searchParams.set('currentMode', 'net');
+            url.searchParams.delete("wh");
+            url.searchParams.delete("sh");
+            url.searchParams.set("color", connection.getOtherColor(color));
+            url.searchParams.set("currentMode", "net");
             console.log("enemy url", url.toString());
             const code = qrRender(url.toString(), document.querySelector(".qrcode"));
-            connection.on('socket_close', () => {
+            connection.on("socket_close", () => {
                 removeElem(code);
             });
         });
 
-        connection.on('open', () => {
+        connection.on("open", () => {
             const game = gameFunction(window, document, settings);
             const actions = actionsFunc(game);
-            connection.on('recv', (data) => {
+            connection.on("recv", (data) => {
                 // console.log(data);
                 const obj = JSON.parse(data);
                 const res = obj[obj.method];
                 const callback = actions[obj.method];
-                if (typeof callback === 'function') {
+                if (typeof callback === "function") {
                     callback(res);
                 }
             });
-            for (const [handlerName, callback] of Object.entries(actions)) {
+            for (const [handlerName,] of Object.entries(actions)) {
                 game.on(handlerName, (n) => connection.sendMessage(toObjJson(n, handlerName)));
             }
             resolve(game);

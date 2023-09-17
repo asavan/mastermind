@@ -1,6 +1,6 @@
 "use strict"; // jshint ;_;
 
-import {delay, assert, pluralize} from "./helper.js";
+import {assert, pluralize} from "./helper.js";
 import {common} from "./solver.js";
 
 function stub() {
@@ -8,7 +8,7 @@ function stub() {
 
 let str = "";
 
-function updateStr(inputArr, size) {
+function updateStr(inputArr) {
     str = "";
     for (const input of inputArr) {
         str += input.value;
@@ -73,61 +73,61 @@ function handleInput(window, inputArr, settings, callback, validator) {
 
 
     window.onkeyup = (e) => {
-      const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
-      if (isNaN(curIndex) || curIndex < 0) {
-        return false;
-      }
-      if (e.key == 'Enter') {
-        if (validator(settings, str)) {
-            callback(str);
-            // clear
-            clear();
+        const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
+        if (isNaN(curIndex) || curIndex < 0) {
+            return false;
         }
-
-        return false;
-      }
-      if (e.key == 'Backspace') {
-        let prev = curIndex - 1;
-        if ((curIndex === size - 1 && str[curIndex]) || prev < 0) {
-            prev = curIndex;
-        }
-        console.log(curIndex, prev, str[curIndex]);
-
-        inputArr[prev].value = "";
-        inputArr[prev].focus();
-        updateStr(inputArr);
-        return false;
-      }
-      //If the input is not a number
-      if (!(e.key >= settings.min.toString() && e.key <= settings.max.toString() || e.keyCode == 229)) {
-        inputArr[curIndex].value = "";
-        return false;
-      }
-
-      updateStr(inputArr);
-      if (!validator(settings, str)) {
-        focusNextIndex(curIndex, inputArr, settings);
-      } else {
-        setTimeout(() => {
+        if (e.key == "Enter") {
             if (validator(settings, str)) {
                 callback(str);
+                // clear
                 clear();
             }
-        }, 200);
-      }
+
+            return false;
+        }
+        if (e.key == "Backspace") {
+            let prev = curIndex - 1;
+            if ((curIndex === size - 1 && str[curIndex]) || prev < 0) {
+                prev = curIndex;
+            }
+            console.log(curIndex, prev, str[curIndex]);
+
+            inputArr[prev].value = "";
+            inputArr[prev].focus();
+            updateStr(inputArr);
+            return false;
+        }
+        //If the input is not a number
+        if (!(e.key >= settings.min.toString() && e.key <= settings.max.toString() || e.keyCode == 229)) {
+            inputArr[curIndex].value = "";
+            return false;
+        }
+
+        updateStr(inputArr);
+        if (!validator(settings, str)) {
+            focusNextIndex(curIndex, inputArr, settings);
+        } else {
+            setTimeout(() => {
+                if (validator(settings, str)) {
+                    callback(str);
+                    clear();
+                }
+            }, 200);
+        }
     };
 }
 
 function initField(window, document, settings) {
-     document.documentElement.style.setProperty('--field-size', settings.size);
-     const inputBox = document.querySelector('.input-div');
-     const cellItem = document.querySelector('#cell');
-     for(let i = 0; i < settings.size; ++i) {
+    document.documentElement.style.setProperty("--field-size", settings.size);
+    const inputBox = document.querySelector(".input-div");
+    const cellItem = document.querySelector("#cell");
+    for(let i = 0; i < settings.size; ++i) {
         const square = cellItem.content.cloneNode(true);
-        const input = square.querySelector('input');
+        const input = square.querySelector("input");
         input.dataset.index = i;
         inputBox.appendChild(square.firstElementChild);
-     }
+    }
 }
 
 
@@ -136,10 +136,10 @@ export default function game(window, document, settings) {
     const close = document.getElementsByClassName("close")[0];
     const btnInstall = document.getElementsByClassName("install")[0];
 
-    const listItem = document.querySelector('#result-row');
-    const resultTable = document.querySelector('.result');
+    const listItem = document.querySelector("#result-row");
+    const resultTable = document.querySelector(".result");
 
-    const inputBox = document.querySelector('.input-div');
+    const inputBox = document.querySelector(".input-div");
     initField(window, document, settings);
 
     const inputArr = inputBox.getElementsByTagName("input");
@@ -158,14 +158,14 @@ export default function game(window, document, settings) {
 
 
     function onGameEnd(message1, message2) {
-        const h2 = overlay.querySelector('h2');
+        const h2 = overlay.querySelector("h2");
         h2.textContent = message1;
-        const content = overlay.querySelector('.content');
+        const content = overlay.querySelector(".content");
         content.textContent = message2;
-        overlay.classList.add('show');
-        btnInstall.classList.remove('hidden2');
-        inputBox.classList.add('hidden');
-        handlers['gameover']();
+        overlay.classList.add("show");
+        btnInstall.classList.remove("hidden2");
+        inputBox.classList.add("hidden");
+        handlers["gameover"]();
     }
 
     close.addEventListener("click", function (e) {
@@ -209,14 +209,15 @@ export default function game(window, document, settings) {
         if (opponentMovesLeft <= movesLeft) {
             enableSend();
         }
+        console.log(isSending);
     }
 
     const handlers = {
-        'player': stub,
-        'sendSecret': stub,
-        'sendAnswer': stub,
-        'gameover': stub
-    }
+        "player": stub,
+        "sendSecret": stub,
+        "sendAnswer": stub,
+        "gameover": stub
+    };
 
     function on(name, f) {
         handlers[name] = f;
@@ -226,11 +227,12 @@ export default function game(window, document, settings) {
         disableSend();
         lastGuess = num;
         const li = listItem.content.cloneNode(true);
-        const request = li.querySelector('.request');
+        const request = li.querySelector(".request");
         request.textContent = num;
         lastTry = resultTable.appendChild(li.firstElementChild);
         --movesLeft;
-        const ans = await handlers['player'](num);
+        const ans = await handlers["player"](num);
+        console.log(ans);
         tryEnableInputs();
     }
 
@@ -238,7 +240,7 @@ export default function game(window, document, settings) {
         disableSend();
         myNumber = num;
         --movesLeft;
-        const ans = await handlers['sendSecret'](num);
+        const ans = await handlers["sendSecret"](num);
         handleInput(window, inputArr, settings, onMove, validateInput);
         tryEnableInputs();
         return ans;
@@ -247,7 +249,7 @@ export default function game(window, document, settings) {
     function checkWinner() {
         if (!meAlreadyWin && !opponentAlreadyWin) {
             if (movesLeft <= 0) {
-               onLoose();
+                onLoose();
             }
             return;
         }
@@ -278,8 +280,8 @@ export default function game(window, document, settings) {
             assert(settings.cheating, "Cheating detected2");
         }
         if (lastTry) {
-           const resp = lastTry.querySelector('.response');
-           resp.textContent = String(verdict).padStart(2, '0');
+            const resp = lastTry.querySelector(".response");
+            resp.textContent = String(verdict).padStart(2, "0");
         } else {
             assert(false, verdict);
         }
@@ -301,15 +303,15 @@ export default function game(window, document, settings) {
         tryEnableInputs();
     }
 
-    if (settings.currentMode === 'net') {
+    if (settings.currentMode === "net") {
         handleInput(window, inputArr, settings, setMyNumber, validateInputCheckRepeat);
     }
 
     async function testSecret(num) {
         const res = common(myNumber, num);
-        opponentAlreadyWin = ((res === settings.size*10) && (settings.currentMode !== 'ai'));
+        opponentAlreadyWin = ((res === settings.size*10) && (settings.currentMode !== "ai"));
         --opponentMovesLeft;
-        await handlers['sendAnswer'](res);
+        await handlers["sendAnswer"](res);
         tryEnableInputs();
         checkWinner();
         return res;
@@ -320,11 +322,11 @@ export default function game(window, document, settings) {
     enableSend();
 
     return {
-       on: on,
-       takeResp: takeResp,
-       tellSecret: tellSecret,
-       testSecret: testSecret,
-       setMyNumber: setMyNumber,
-       getScore: getScore
-    }
+        on: on,
+        takeResp: takeResp,
+        tellSecret: tellSecret,
+        testSecret: testSecret,
+        setMyNumber: setMyNumber,
+        getScore: getScore
+    };
 }
