@@ -1,129 +1,126 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 :root {
-    --main-color: #F0F8FF;
-    --comp-color: red;
-    --player-color: royalblue;
-    --field-size: 4;
+  --main-color: #F0F8FF;
+  --comp-color: red;
+  --player-color: royalblue;
+  --field-size: 4;
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
-    flex: 1 0 auto;
+  flex: 1 0 auto;
 }
 
 footer {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .qrcode.big {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(var(--field-size) * 100px + 50px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--field-size) * 100px + 50px);
 }
 
 .qrcode {
-    width: 300px;
-    margin: auto;
+  width: 300px;
+  margin: auto;
 }
 
-@media (max-width: 700px) {
-    .hidden2 {
-        display: none;
-    }
+@media (width <= 700px) {
+  .hidden2 {
+    display: none;
+  }
 }
 
 .install {
-    background-color: var(--main-color);
-    text-align: center;
-    font: bold 24px/100px Tahoma, sans;
-    height: 100px;
-    width: 100%;
-    cursor: pointer;
-    border: 0;
-    padding: 0;
+  background-color: var(--main-color);
+  text-align: center;
+  font: bold 24px/100px Tahoma, sans-serif;
+  height: 100px;
+  width: 100%;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
 }
 
 
 img {
-    max-width: 100%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    height: 100px;
+  max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
 }
 
 
-@media (max-width: 450px) {
-    .hidden2 {
-        display: none;
-    }
+@media (width <= 450px) {
+  .hidden2 {
+    display: none;
+  }
 }
 
 .overlay {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.7);
-    transition: opacity 700ms;
-    visibility: hidden;
-    opacity: 0;
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 70%);
+  transition: opacity 700ms;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .overlay.show {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 
 .popup {
-    margin: 70px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 5px;
-    width: 80%;
-    position: relative;
-    transition: all 5s ease-in-out;
+  margin: 70px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  width: 80%;
+  position: relative;
+  transition: all 5s ease-in-out;
 }
 
 .popup h2 {
-    margin-top: 0;
-    color: #333;
-    font-family: Tahoma, Arial, sans-serif;
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
 }
 
 .popup .close {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    transition: all 400ms;
-    font-size: 30px;
-    font-weight: bold;
-    text-decoration: none;
-    color: #333;
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  transition: all 400ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
 }
 
 .popup .close:hover {
-    color: var(--player-color);
+  color: var(--player-color);
 }
 
 .popup .content {
-    max-height: 30%;
-    overflow: auto;
+  max-height: 30%;
+  overflow: auto;
 }
 
 .check-div {
@@ -132,17 +129,18 @@ img {
 }
 
 .input-div {
-    display: grid;
-    grid-template-columns: repeat(var(--field-size), 1fr);
-    grid-gap: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
+  display: grid;
+  grid-template-columns: repeat(var(--field-size), 1fr);
+  grid-gap: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 input {
   text-align: center;
   border: none;
-  /* Here pay attention to modify the default outer border properties, without border*/
+
+  /* Here pay attention to modify the default outer border properties, without border */
   outline: 1px solid black;
   font-size: 28px;
   border-radius: 10%;
@@ -157,7 +155,8 @@ input {
   text-align: center;
   border: none;
   aspect-ratio: 1 / 1;
-  /* Here pay attention to modify the default outer border properties, without border*/
+
+  /* Here pay attention to modify the default outer border properties, without border */
 }
 
 input:focus {
@@ -165,31 +164,31 @@ input:focus {
 }
 
 .request {
-    font-style: italic;
+  font-style: italic;
 }
 
 .app {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  max-width: 300px;
 }
 
 .result {
-   flex: 1 0 auto;
-   list-style-type: none;
-   columns: 2;
-   column-fill: auto;
-   height: 200px;
+  flex: 1 0 auto;
+  list-style-type: none;
+  columns: 2;
+  column-fill: auto;
+  height: 200px;
 }
 
 .row {
-    font-size: 36px;
-    display: flex;
-    font-family: 'Roboto Mono', monospace;
-    justify-content: space-between;
+  font-size: 36px;
+  display: flex;
+  font-family: 'Roboto Mono', monospace;
+  justify-content: space-between;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
