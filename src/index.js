@@ -1,7 +1,7 @@
 "use strict";
 
 import install from "./install_as_app.js";
-import starter from "./js/starter.js";
+import starter from "./starter.js";
 
 // eslint-disable-next-line no-undef
 if (__USE_SERVICE_WORKERS__) {
