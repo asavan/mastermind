@@ -7,7 +7,7 @@ function intersect_safe(a, b)
 
     while( ai < a.length && bi < b.length )
     {
-        if      (a[ai] < b[bi] ){ ai++; }
+        if (a[ai] < b[bi] ){ ai++; }
         else if (a[ai] > b[bi] ){ bi++; }
         else /* they're equal */
         {

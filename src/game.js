@@ -272,7 +272,7 @@ export default function game(window, document, settings) {
         }
     }
 
-    async function takeResp(verdict) {
+    function takeResp(verdict) {
         if (secret) {
             const isOk = validateVerdict(verdict, secret, lastGuess);
             assert(settings.cheating || isOk, "Cheating detected");

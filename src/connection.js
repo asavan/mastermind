@@ -19,7 +19,7 @@ const handlers = {
 
 function stringifyEvent(e) {
     const obj = {};
-    for (let k in e) {
+    for (const k in e) {
         obj[k] = e[k];
     }
     return JSON.stringify(obj, (k, v) => {
@@ -130,7 +130,7 @@ const connectionFunc = function (settings, location) {
                     console.error("same user");
                     return;
                 }
-                handlers["server_message"](json);
+                await handlers["server_message"](json);
             };
             return;
         }

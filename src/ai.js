@@ -3,13 +3,13 @@
 import {delay} from "./helper.js";
 
 const randomInteger = (min, max) => {
-    let rand = min + Math.random() * (max - min);
+    const rand = min + Math.random() * (max - min);
     return Math.floor(rand);
 };
 
 
 function simpleBot(settings, game) {
-    let result = [];
+    const result = [];
     for (let i = 0; i < settings.size; i++) {
         let cand = randomInteger(settings.min, settings.max + 1);
         while (!settings.repeat && result.includes(cand)) {
