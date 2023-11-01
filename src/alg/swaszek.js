@@ -14,12 +14,12 @@ export default function Swaszek() {
         } else {
             return helper.tryGuessNum();
         }
-    }
+    };
 
     return {
         init,
         learn,
         tryGuessNum,
         getRest
-    }
+    };
 }

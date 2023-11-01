@@ -8,21 +8,21 @@ import swaszekGuesser from "../../src/alg/swaszek.js";
 import runner from "../../src/alg/runner.js";
 import engine from "../../src/engine.js";
 
-test("simple", async () => {
+test("simple", () => {
     const eng = engine.fromString("1235");
     const guesser = simple.simpleGuesser(4, 6);
     const count = runner(guesser, eng, []);
     assert.strictEqual(count, 5, "too long");
 });
 
-test("random", async () => {
+test("random", () => {
     const eng = engine.fromString("1235");
     const guesser = randomGuesser(4, 6);
     const count = runner(guesser, eng, []);
     assert.ok(count < 8, "too long " + count);
 });
 
-test("random average", async () => {
+test("random average", () => {
     const allVariants = simple.generateAllVariants(4, 6);
     let allCount = 0;
     let maxCount = 0;
@@ -36,7 +36,7 @@ test("random average", async () => {
     console.log(allCount, maxCount);
 });
 
-test("simple average", async () => {
+test("simple average", () => {
     const allVariants = simple.generateAllVariants(4, 6);
     let allCount = 0;
     let maxCount = 0;
@@ -51,7 +51,7 @@ test("simple average", async () => {
     assert.strictEqual(allCount, 7471, "too long");
 });
 
-test("Swaszek average", async () => {
+test("Swaszek average", () => {
     const allVariants = simple.generateAllVariants(4, 6);
     let allCount = 0;
     let maxCount = 0;
@@ -66,7 +66,7 @@ test("Swaszek average", async () => {
     assert.strictEqual(allCount, 6508, "too long");
 });
 
-test("simple with init", async () => {
+test("simple with init", () => {
     const eng = engine.fromString("1235");
     const guesser = simple.simpleGuesser(4, 6);
     const count = runner(guesser, eng, [[1234, 30]]);

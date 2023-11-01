@@ -6,7 +6,7 @@ function init(secArr) {
     }
 
     function testStr(str) {
-        return commonArr(secArr.slice(), Array.from(str).map((i) => parseInt(i, 10)));
+        return common(secArr, str);
     }
 
     function isWinNum(verdict) {
@@ -17,7 +17,7 @@ function init(secArr) {
         testNum,
         isWinNum,
         testStr
-    }
+    };
 }
 
 function fromString(str) {
@@ -31,5 +31,5 @@ function fromNum(num) {
 export default {
     fromString,
     fromNum
-}
+};
 

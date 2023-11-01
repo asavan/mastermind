@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 
 import engine from "../src/engine.js";
 
-test("simple engine", async () => {
+test("simple engine", () => {
     const eng = engine.fromString("1234");
     const verdict = eng.testStr("1234");
     assert.strictEqual(verdict, 40, "must be 40");

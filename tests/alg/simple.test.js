@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 
 import simple from "../../src/alg/simple.js";
 
-test("simple", async () => {
+test("simple", () => {
     const arr = simple.generateAllVariants(4, 6);
     assert.strictEqual(1296, arr.size);
     assert.ok(arr.has(1111), "fist included");
