@@ -12,7 +12,7 @@ function simple() {
     const learn = (guess, verdict) => {
         allPossibles = allPossibles.filter(x => x !== guess);
         return helper.learn(guess, verdict);
-    }
+    };
     const init = helper.init;
     const isFirst = helper.isFirst;
     const getRest = helper.getRest;
@@ -146,7 +146,7 @@ function random_fast() {
     const init = helper.init;
     const getRest = helper.getRest;
 
-    let twoColors = helper.getRest().filter(el => {
+    const twoColors = helper.getRest().filter(el => {
         const a = numToDigits(el);
         a.sort();
         return a[0] === a[1] && a[1] !== a[2] && a[2] === a[3];
@@ -156,7 +156,6 @@ function random_fast() {
 
     const tryGuessNum = () => {
         if (helper.isFirst()) {
-            const firstMove = []
             return randomUtil.randEl(twoColors);
         } else {
             return helper.tryGuessNum();
@@ -170,8 +169,6 @@ function random_fast() {
         getRest
     };
 }
-
-
 
 export default {
     simple,
