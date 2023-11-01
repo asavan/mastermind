@@ -13,7 +13,11 @@
     "android": "webpack --config webpack_configs/android.webpack.config.js --mode production",
     "build": "webpack --config webpack_configs/production.webpack.config.js --mode production",
     "style": "npx eslint . && npx stylelint \"**/*.css\"",
-    "style:fix": "npx eslint . --fix && npx stylelint \"**/*.css\" --fix"
+    "style:fix": "npx eslint . --fix && npx stylelint \"**/*.css\" --fix",
+    "test": "node --test --test-reporter dot ./tests/**/*.test.js",
+    "test:verbose": "node --test ./tests/**/*.test.js",
+    "test:watch": "node --test --watch ./tests/**/*.test.js",
+    "test:coverage": "c8 node --test --test-reporter dot ./tests/**/*.test.js"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^11.0.0",
