@@ -17,7 +17,22 @@ function simple() {
     const isFirst = helper.isFirst;
     const getRest = helper.getRest;
 
-    const MiniMax = (knuth_codes, possible_codes) => {
+    const getFirstBest = (scores, possible_codes, knuth_codes_set) => {
+        const minimum = Math.min(...scores);
+        const guess_codes = [];
+        for (const code of possible_codes) {
+            if (scores[code] === minimum) {
+                if (knuth_codes_set.has(code)) {
+                    return code;
+                }
+                guess_codes.push(code);
+
+            }
+        }
+        return guess_codes[0];
+    }
+
+    const MiniMax = (knuth_codes, possible_codes, calc_best_callback) => {
         const scores = new Array(6667).fill(1300);
         const knuth_codes_set = new Set(knuth_codes);
         for (const code of possible_codes) {
@@ -30,30 +45,14 @@ function simple() {
             const maximum = Math.max(...times_found);
             scores[code] = maximum;
         }
-        const minimum = Math.min(...scores);
-        // console.log("finish max phase", minimum);
-        const guess_codes = [];
-        for (const code of possible_codes) {
-            if (scores[code] === minimum) {
-                if (knuth_codes_set.has(code)) {
-                    // console.log("best code", code);
-                    return code;
-                }
-                guess_codes.push(code);
-
-            }
-        }
-        // console.log("found code", guess_codes[0]);
-        return guess_codes[0]; // maybe random better
+        return calc_best_callback(scores, possible_codes, knuth_codes_set);
     };
 
-    const getCode = () => {
-        return MiniMax(helper.getRest(), allPossibles);
+    const tryGuessNum = () => {
+        return MiniMax(helper.getRest(), allPossibles, getFirstBest);
     };
 
     const getAllPossibles = () => allPossibles;
-
-    const tryGuessNum = getCode;
 
     return {
         init,
@@ -61,7 +60,8 @@ function simple() {
         tryGuessNum,
         getRest,
         isFirst,
-        getAllPossibles
+        getAllPossibles,
+        MiniMax
     };
 }
 
@@ -95,19 +95,7 @@ function random() {
     const isFirst = helper.isFirst;
     const getRest = helper.getRest;
 
-    const MiniMax = (knuth_codes, possible_codes) => {
-        const scores = new Array(6667).fill(1300);
-        const knuth_codes_set = new Set(knuth_codes);
-        for (const code of possible_codes) {
-            const times_found = new Array(41).fill(0);
-            const eng = engine.fromNum(code);
-            for (const code_to_crack of knuth_codes) {
-                const verdict = eng.testNum(code_to_crack);
-                ++times_found[verdict];
-            }
-            const maximum = Math.max(...times_found);
-            scores[code] = maximum;
-        }
+    const getRandomBest = (scores, possible_codes, knuth_codes_set) => {
         const minimum = Math.min(...scores);
         const guess_codes = [];
         const best_codes = [];
@@ -125,10 +113,10 @@ function random() {
             return randomUtil.randEl(best_codes);
         }
         return randomUtil.randEl(guess_codes);
-    };
+    }
 
     const tryGuessNum = () => {
-        return MiniMax(helper.getRest(), helper.getAllPossibles());
+        return helper.MiniMax(helper.getRest(), helper.getAllPossibles(), getRandomBest);
     };
 
     return {
@@ -151,8 +139,6 @@ function random_fast() {
         a.sort();
         return a[0] === a[1] && a[1] !== a[2] && a[2] === a[3];
     });
-
-    // console.log("twoColors", twoColors.length);
 
     const tryGuessNum = () => {
         if (helper.isFirst()) {
