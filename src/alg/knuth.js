@@ -152,7 +152,7 @@ function random_fast() {
         return a[0] === a[1] && a[1] !== a[2] && a[2] === a[3];
     });
 
-    console.log("twoColors", twoColors.length);
+    // console.log("twoColors", twoColors.length);
 
     const tryGuessNum = () => {
         if (helper.isFirst()) {
