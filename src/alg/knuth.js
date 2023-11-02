@@ -30,7 +30,7 @@ function simple() {
             }
         }
         return guess_codes[0];
-    }
+    };
 
     const MiniMax = (knuth_codes, possible_codes, calc_best_callback) => {
         const scores = new Array(6667).fill(1300);
@@ -113,7 +113,7 @@ function random() {
             return randomUtil.randEl(best_codes);
         }
         return randomUtil.randEl(guess_codes);
-    }
+    };
 
     const tryGuessNum = () => {
         return helper.MiniMax(helper.getRest(), helper.getAllPossibles(), getRandomBest);
