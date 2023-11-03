@@ -16,14 +16,14 @@ test("knuth fast", () => {
 
 test("knuth simple", () => {
     const eng = engine.fromString("1235");
-    const guesser = knuthGuesser.simple();
+    const guesser = knuthGuesser.simple(4, 6);
     const count = runner(guesser, eng, []);
     assert.strictEqual(count, 3);
 });
 
 test("knuth rand", () => {
     const eng = engine.fromString("1235");
-    const guesser = knuthGuesser.random();
+    const guesser = knuthGuesser.random(4, 6);
     const count = runner(guesser, eng, []);
     console.log("knuth rand", count);
     assert.ok(count <= 5);

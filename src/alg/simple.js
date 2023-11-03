@@ -23,7 +23,8 @@ function genArray(pos, colors, filler) {
 }
 
 function simpleGuesser(pos, colors) {
-    let rest = Array.from(generateAllVariants(pos, colors));
+    const initial_set = generateAllVariants(pos, colors);
+    let rest = Array.from(initial_set);
     let totalCount = 0;
     let guessCount = 0;
     function learn(guess, verdict) {
@@ -42,6 +43,10 @@ function simpleGuesser(pos, colors) {
         return Array.from(rest);
     }
 
+
+    const getInitialSet = () => initial_set;
+    const getRestUnsafe = () => rest;
+
     const isLogicalMove = (numGuess) => rest.includes(numGuess);
 
     const tryGuessNum = () => {
@@ -59,6 +64,8 @@ function simpleGuesser(pos, colors) {
         learn,
         tryGuessNum,
         getRest,
+        getRestUnsafe,
+        getInitialSet,
         isLogicalMove,
         getGuessCount,
         getTotalCount,

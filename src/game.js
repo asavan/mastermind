@@ -67,9 +67,11 @@ function focusNextIndex(curIndex, inputArr, settings) {
     }
 }
 
-function handleInput(window, inputArr, settings, callback, validator) {
+function handleInput(window, inputArr, settings, callback, validator, isSending) {
+    if (isSending) {
+        return;
+    }
 
-    const size = settings.size;
     let hasSymbol = false;
 
     function clear() {
@@ -86,12 +88,11 @@ function handleInput(window, inputArr, settings, callback, validator) {
             if (isNaN(curIndex) || curIndex < 0) {
                 return false;
             }
-            hasSymbol = str[curIndex] && str[curIndex] !== ' ';
-            console.log(str[curIndex], hasSymbol, curIndex);
+            hasSymbol = str[curIndex] && str[curIndex] !== " ";
             return true;
         }
         return true;
-    }
+    };
 
 
     window.onkeyup = (e) => {
@@ -115,7 +116,6 @@ function handleInput(window, inputArr, settings, callback, validator) {
                 prev = curIndex;
             }
             hasSymbol = false;
-            console.log(curIndex, prev, str[curIndex], curIndex);
 
             inputArr[prev].value = "";
             inputArr[prev].focus();
@@ -287,7 +287,7 @@ export default function game(window, document, settings) {
         myNumber = num;
         --movesLeft;
         const ans = await handlers["sendSecret"](num);
-        handleInput(window, inputArr, settings, onMove, validateInput);
+        handleInput(window, inputArr, settings, onMove, validateInput, isSending);
         tryEnableInputs();
         return ans;
     }
@@ -350,7 +350,7 @@ export default function game(window, document, settings) {
     }
 
     if (settings.currentMode === "net") {
-        handleInput(window, inputArr, settings, setMyNumber, validateInputCheckRepeat);
+        handleInput(window, inputArr, settings, setMyNumber, validateInputCheckRepeat, isSending);
     }
 
     async function testSecret(num) {

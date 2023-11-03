@@ -6,16 +6,16 @@ import randomUtil from "./random-util.js";
 
 
 // https://en.wikipedia.org/wiki/Mastermind_(board_game)#Five-guess_algorithm
-function simple() {
-    const helper = dumb.simpleGuesser(4, 6);
-    let allPossibles = helper.getRest().slice();
+function simple(pos, colors) {
+    const helper = dumb.simpleGuesser(pos, colors);
+    const allPossibles = helper.getInitialSet();
     const learn = (guess, verdict) => {
-        allPossibles = allPossibles.filter(x => x !== guess);
+        allPossibles.delete(guess);
         return helper.learn(guess, verdict);
     };
     const init = helper.init;
     const isFirst = helper.isFirst;
-    const getRest = helper.getRest;
+    const getRestUnsafe = helper.getRestUnsafe;
 
     const getFirstBest = (scores, possible_codes, knuth_codes_set) => {
         const minimum = Math.min(...scores);
@@ -26,19 +26,20 @@ function simple() {
                     return code;
                 }
                 guess_codes.push(code);
-
             }
         }
         return guess_codes[0];
     };
 
-    const MiniMax = (knuth_codes, possible_codes, calc_best_callback) => {
-        const scores = new Array(6667).fill(1300);
-        const knuth_codes_set = new Set(knuth_codes);
+    const MiniMax = (knuth_codes_set, possible_codes, calc_best_callback) => {
+        const len = Math.floor(Math.pow(10, pos));
+        const max_value = Math.floor(Math.pow(colors, pos)) + 1;
+        const verdict_len = pos * 10 + 1;
+        const scores = new Array(len).fill(max_value);
         for (const code of possible_codes) {
-            const times_found = new Array(41).fill(0);
+            const times_found = new Array(verdict_len).fill(0);
             const eng = engine.fromNum(code);
-            for (const code_to_crack of knuth_codes) {
+            for (const code_to_crack of knuth_codes_set) {
                 const verdict = eng.testNum(code_to_crack);
                 ++times_found[verdict];
             }
@@ -48,28 +49,28 @@ function simple() {
         return calc_best_callback(scores, possible_codes, knuth_codes_set);
     };
 
-    const tryGuessNum = () => {
-        return MiniMax(helper.getRest(), allPossibles, getFirstBest);
+    const getCode = (calc_best_callback) => {
+        return MiniMax(new Set(helper.getRestUnsafe()), allPossibles, calc_best_callback);
     };
 
-    const getAllPossibles = () => allPossibles;
+    const tryGuessNum = () => {
+        return getCode(getFirstBest);
+    };
 
     return {
         init,
         learn,
         tryGuessNum,
-        getRest,
+        getRestUnsafe,
         isFirst,
-        getAllPossibles,
-        MiniMax
+        getCode,
     };
 }
 
 function fast() {
-    const helper = simple();
+    const helper = simple(4, 6);
     const learn = helper.learn;
     const init = helper.init;
-    const getRest = helper.getRest;
 
     const tryGuessNum = () => {
         if (helper.isFirst()) {
@@ -82,18 +83,17 @@ function fast() {
     return {
         init,
         learn,
-        tryGuessNum,
-        getRest
+        tryGuessNum
     };
 }
 
-function random() {
-    const helper = simple();
+function random(pos, colors) {
+    const helper = simple(pos, colors);
 
     const learn = helper.learn;
     const init = helper.init;
     const isFirst = helper.isFirst;
-    const getRest = helper.getRest;
+    const getRestUnsafe = helper.getRestUnsafe;
 
     const getRandomBest = (scores, possible_codes, knuth_codes_set) => {
         const minimum = Math.min(...scores);
@@ -116,25 +116,24 @@ function random() {
     };
 
     const tryGuessNum = () => {
-        return helper.MiniMax(helper.getRest(), helper.getAllPossibles(), getRandomBest);
+        return helper.getCode(getRandomBest);
     };
 
     return {
         init,
         learn,
         tryGuessNum,
-        getRest,
+        getRestUnsafe,
         isFirst
     };
 }
 
 function random_fast() {
-    const helper = random();
+    const helper = random(4, 6);
     const learn = helper.learn;
     const init = helper.init;
-    const getRest = helper.getRest;
 
-    const twoColors = helper.getRest().filter(el => {
+    const twoColors = helper.getRestUnsafe().filter(el => {
         const a = numToDigits(el);
         a.sort();
         return a[0] === a[1] && a[1] !== a[2] && a[2] === a[3];
@@ -151,8 +150,7 @@ function random_fast() {
     return {
         init,
         learn,
-        tryGuessNum,
-        getRest
+        tryGuessNum
     };
 }
 
