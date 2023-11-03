@@ -1,7 +1,8 @@
 "use strict"; // jshint ;_;
 
 import {assert, pluralize} from "./helper.js";
-import {common} from "./solver.js";
+import {common, numToDigits} from "./solver.js";
+import knuthGuesser from "./alg/knuth.js";
 
 function stub() {
 }
@@ -11,7 +12,11 @@ let str = "";
 function updateStr(inputArr) {
     str = "";
     for (const input of inputArr) {
-        str += input.value;
+        if (input.value) {
+            str += input.value;
+        } else {
+            str += " ";
+        }
     }
 }
 
@@ -49,9 +54,11 @@ function validateInputCheckRepeat(settings, str) {
 }
 
 function focusNextIndex(curIndex, inputArr, settings) {
+    // console.trace("focusNextIndex", curIndex);
     for (let i = 0; i < inputArr.length; ++i) {
         const index = (i + curIndex + 1) % inputArr.length;
         const digit = parseInt(inputArr[index].value, 10);
+        // console.log("found next", digit);
         if (isNaN(digit) || digit < settings.min || digit > settings.max) {
             inputArr[index].value = "";
             inputArr[index].focus();
@@ -63,6 +70,7 @@ function focusNextIndex(curIndex, inputArr, settings) {
 function handleInput(window, inputArr, settings, callback, validator) {
 
     const size = settings.size;
+    let hasSymbol = false;
 
     function clear() {
         for (const input of inputArr) {
@@ -71,13 +79,28 @@ function handleInput(window, inputArr, settings, callback, validator) {
         updateStr(inputArr);
     }
 
+    window.onkeydown = (e) => {
+        // console.log("down", e.key, curIndex);
+        if (e.key === "Backspace") {
+            const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
+            if (isNaN(curIndex) || curIndex < 0) {
+                return false;
+            }
+            hasSymbol = str[curIndex] && str[curIndex] !== ' ';
+            console.log(str[curIndex], hasSymbol, curIndex);
+            return true;
+        }
+        return true;
+    }
+
 
     window.onkeyup = (e) => {
         const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
+        // console.log("up", e.key, curIndex);
         if (isNaN(curIndex) || curIndex < 0) {
             return false;
         }
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
             if (validator(settings, str)) {
                 callback(str);
                 // clear
@@ -86,12 +109,13 @@ function handleInput(window, inputArr, settings, callback, validator) {
 
             return false;
         }
-        if (e.key == "Backspace") {
+        if (e.key === "Backspace") {
             let prev = curIndex - 1;
-            if ((curIndex === size - 1 && str[curIndex]) || prev < 0) {
+            if (hasSymbol || prev < 0) {
                 prev = curIndex;
             }
-            console.log(curIndex, prev, str[curIndex]);
+            hasSymbol = false;
+            console.log(curIndex, prev, str[curIndex], curIndex);
 
             inputArr[prev].value = "";
             inputArr[prev].focus();
@@ -99,12 +123,16 @@ function handleInput(window, inputArr, settings, callback, validator) {
             return false;
         }
         //If the input is not a number
-        if (!(e.key >= settings.min.toString() && e.key <= settings.max.toString() || e.keyCode == 229)) {
+        const value = inputArr[curIndex].value;
+        // console.log("before update", str, inputArr[curIndex].value);
+        if (value === "" || value < settings.min.toString() || value > settings.max.toString()) {
             inputArr[curIndex].value = "";
+            // console.log("fast exit");
+            updateStr(inputArr);
             return false;
         }
-
         updateStr(inputArr);
+        // console.log("after update", str);
         if (!validator(settings, str)) {
             focusNextIndex(curIndex, inputArr, settings);
         } else {
@@ -140,6 +168,10 @@ export default function game(window, document, settings) {
     const resultTable = document.querySelector(".result");
 
     const inputBox = document.querySelector(".input-div");
+    let helper = null;
+    if (settings.min === 1 && settings.max === 6 && settings.size === 4 && settings.cheating) {
+        helper = knuthGuesser.fast();
+    }
     initField(window, document, settings);
 
     const inputArr = inputBox.getElementsByTagName("input");
@@ -165,7 +197,7 @@ export default function game(window, document, settings) {
         overlay.classList.add("show");
         btnInstall.classList.remove("hidden2");
         inputBox.classList.add("hidden");
-        handlers["gameover"]();
+        handlers["gameover"](score);
     }
 
     close.addEventListener("click", function (e) {
@@ -198,9 +230,20 @@ export default function game(window, document, settings) {
 
     function enableSend() {
         isSending = false;
+
+        let clue = new Array(settings.size).fill(0);
+        if (helper) {
+            const num = helper.tryGuessNum();
+            clue = numToDigits(num);
+        }
+        let ind = 0;
         for (const input of inputArr) {
             // input.value = "";
             input.disabled = false;
+            if (clue[ind]) {
+                input.placeholder = clue[ind];
+            }
+            ++ind;
         }
         inputArr[0].focus();
     }
@@ -209,7 +252,7 @@ export default function game(window, document, settings) {
         if (opponentMovesLeft <= movesLeft) {
             enableSend();
         }
-        console.log(isSending);
+        // console.log(isSending);
     }
 
     const handlers = {
@@ -232,7 +275,10 @@ export default function game(window, document, settings) {
         lastTry = resultTable.appendChild(li.firstElementChild);
         --movesLeft;
         const ans = await handlers["player"](num);
-        console.log(ans);
+        if (helper) {
+            helper.learn(num, ans);
+        }
+        // console.log(ans);
         tryEnableInputs();
     }
 

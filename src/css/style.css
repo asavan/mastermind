@@ -151,6 +151,11 @@ input {
   object-position: center;
 }
 
+input::placeholder {
+  opacity: 0.2;
+  font-size: 10px;
+}
+
 .square {
   text-align: center;
   border: none;
