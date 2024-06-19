@@ -69,7 +69,8 @@ function focusNextIndex(curIndex, inputArr, settings) {
 
 function handleInput(window, inputArr, settings, callback, validator, isSending) {
     if (isSending) {
-        return;
+        console.log("handleInput1", isSending);
+        // return;
     }
 
     let hasSymbol = false;
@@ -97,7 +98,7 @@ function handleInput(window, inputArr, settings, callback, validator, isSending)
 
     window.onkeyup = (e) => {
         const curIndex = parseInt(e.target.getAttribute("data-index"), 10); //Get the index of the current input
-        // console.log("up", e.key, curIndex);
+        console.log("up", e.key, curIndex);
         if (isNaN(curIndex) || curIndex < 0) {
             return false;
         }
