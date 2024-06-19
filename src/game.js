@@ -150,7 +150,7 @@ function initField(window, document, settings) {
     document.documentElement.style.setProperty("--field-size", settings.size);
     const inputBox = document.querySelector(".input-div");
     const cellItem = document.querySelector("#cell");
-    for(let i = 0; i < settings.size; ++i) {
+    for (let i = 0; i < settings.size; ++i) {
         const square = cellItem.content.cloneNode(true);
         const input = square.querySelector("input");
         input.dataset.index = i;
@@ -200,7 +200,7 @@ export default function game(window, document, settings) {
         handlers["gameover"](score);
     }
 
-    close.addEventListener("click", function (e) {
+    close.addEventListener("click", (e) => {
         e.preventDefault();
         overlay.classList.remove("show");
     }, false);

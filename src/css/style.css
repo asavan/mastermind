@@ -40,7 +40,7 @@ footer {
   margin: auto;
 }
 
-@media (width <= 700px) {
+@media (max-width: 700px) {
   .hidden2 {
     display: none;
   }
@@ -67,7 +67,7 @@ img {
 }
 
 
-@media (width <= 450px) {
+@media (max-width: 450px) {
   .hidden2 {
     display: none;
   }

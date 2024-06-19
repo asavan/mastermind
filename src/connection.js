@@ -23,8 +23,12 @@ function stringifyEvent(e) {
         obj[k] = e[k];
     }
     return JSON.stringify(obj, (k, v) => {
-        if (v instanceof Node) return "Node";
-        if (v instanceof Window) return "Window";
+        if (v instanceof Node) {
+            return "Node";
+        }
+        if (v instanceof Window) {
+            return "Window";
+        }
         return v;
     }, " ");
 }
@@ -50,9 +54,7 @@ function getOtherColor(color) {
 function createSignalingChannel(socketUrl, color, serverOnly) {
     const ws = new WebSocket(socketUrl);
 
-    const send = (type, sdp) => {
-        return sendNegotiation(type, sdp, ws);
-    };
+    const send = (type, sdp) => sendNegotiation(type, sdp, ws);
     const close = () => {
         // iphone fires "onerror" on close socket
         handlers["error"] = stub;
@@ -112,7 +114,8 @@ const connectionFunc = function (settings, location) {
         return "ws://" + location.hostname + ":" + settings.wsPort;
     }
 
-    // inspired by http://udn.realityripple.com/docs/Web/API/WebRTC_API/Perfect_negotiation#Implementing_perfect_negotiation
+    // inspired by
+    // http://udn.realityripple.com/docs/Web/API/WebRTC_API/Perfect_negotiation#Implementing_perfect_negotiation
     // and https://w3c.github.io/webrtc-pc/#perfect-negotiation-example
     function connect() {
         const socketUrl = getWebSocketUrl();
@@ -139,7 +142,9 @@ const connectionFunc = function (settings, location) {
         // window.pc = peerConnection;
 
         peerConnection.onicecandidate = function (e) {
-            if (!e) return;
+            if (!e) {
+                return;
+            }
             console.log("candidate", e.candidate);
             signaling.send("candidate", e.candidate);
         };
@@ -161,7 +166,7 @@ const connectionFunc = function (settings, location) {
                 console.log("make offer");
                 await peerConnection.setLocalDescription();
                 signaling.send("description", peerConnection.localDescription);
-            } catch(err) {
+            } catch (err) {
                 console.error(err);
             } finally {
                 makingOffer = false;

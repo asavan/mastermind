@@ -1,16 +1,15 @@
 "use strict";
 
-function intersect_safe(a, b)
-{
+function intersect_safe(a, b) {
     let ai=0, bi=0;
     const result = [];
 
-    while( ai < a.length && bi < b.length )
-    {
-        if (a[ai] < b[bi] ){ ai++; }
-        else if (a[ai] > b[bi] ){ bi++; }
-        else /* they're equal */
-        {
+    while ( ai < a.length && bi < b.length ) {
+        if (a[ai] < b[bi] ) {
+            ai++;
+        } else if (a[ai] > b[bi] ) {
+            bi++;
+        } else /* they're equal */ {
             result.push(a[ai]);
             ai++;
             bi++;
@@ -33,7 +32,7 @@ export function numToDigits(num) {
 export function commonArr(a, b) {
     let same = 0;
     for (let i = 0; i < a.length; ++i) {
-        if(a[i] == b[i]) {
+        if (a[i] == b[i]) {
             a.splice(i, 1);
             b.splice(i, 1);
             ++same;

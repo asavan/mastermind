@@ -49,13 +49,9 @@ function simple(pos, colors) {
         return calc_best_callback(scores, possible_codes, knuth_codes_set);
     };
 
-    const getCode = (calc_best_callback) => {
-        return MiniMax(new Set(helper.getRestUnsafe()), allPossibles, calc_best_callback);
-    };
+    const getCode = (calc_best_callback) => MiniMax(new Set(helper.getRestUnsafe()), allPossibles, calc_best_callback);
 
-    const tryGuessNum = () => {
-        return getCode(getFirstBest);
-    };
+    const tryGuessNum = () => getCode(getFirstBest);
 
     return {
         init,
@@ -115,9 +111,7 @@ function random(pos, colors) {
         return randomUtil.randEl(guess_codes);
     };
 
-    const tryGuessNum = () => {
-        return helper.getCode(getRandomBest);
-    };
+    const tryGuessNum = () => helper.getCode(getRandomBest);
 
     return {
         init,

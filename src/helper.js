@@ -30,8 +30,8 @@ export function log(settings, message, el) {
 }
 
 
-function stringToBoolean(string){
-    switch(string.toLowerCase().trim()){
+function stringToBoolean(string) {
+    switch (string.toLowerCase().trim()) {
     case "true": case "yes": case "1": return true;
     case "false": case "no": case "0": case null: return false;
     default: return Boolean(string);
@@ -55,11 +55,13 @@ export function parseSettings(window, document, settings) {
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export function assert(b, message) {
-    if (b) return;
+    if (b) {
+        return;
+    }
     console.error(message);
     throw message;
 }
 
-export function pluralize(count, noun, suffix = "s"){
+export function pluralize(count, noun, suffix = "s") {
     return `${count} ${noun}${count !== 1 ? suffix : ""}`;
 }
