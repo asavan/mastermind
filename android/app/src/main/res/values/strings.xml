@@ -1,6 +1,33 @@
 <resources>
     <string name="app_name">Mastermind game</string>
 
+    <string name="asset_statements" translatable="false">
+    [{
+        \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+        \"target\": {
+        \"namespace\": \"web\",
+        \"site\": \"http://127.0.0.1:8080\"}
+        },
+        {
+        \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+        \"target\": {
+        \"namespace\": \"web\",
+        \"site\": \"http://localhost:8080\"}
+        },
+        {
+        \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+        \"target\": {
+        \"namespace\": \"web\",
+        \"site\": \"http://localhost\"}
+        },
+        {
+        \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+        \"target\": {
+        \"namespace\": \"web\",
+        \"site\": \"https://asavan.github.io\"}
+    }]
+    </string>
+
     <string name="launch">Launch in browser</string>
     <string name="launch_twa">Launch in app</string>
     <string name="launch_twa_atenalp">Launch newest version</string>

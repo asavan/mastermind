@@ -40,7 +40,7 @@ export default function config() {
             }), new CssMinimizerPlugin()],
         },
         plugins: [
-            new HTMLInlineCSSWebpackPlugin(),
+            new HTMLInlineCSSWebpackPlugin.default(),
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
                 minify: false

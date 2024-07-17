@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@style/Theme.Mastermind"
+        android:theme="@style/Theme.Game"
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
 

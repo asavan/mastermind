@@ -14,7 +14,7 @@
     <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/launch" />
     <Space
         android:layout_width="0dp"
@@ -26,7 +26,7 @@
     <Button
         android:id="@+id/button3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/launch_twa_atenalp" />
     <Space
         android:layout_width="0dp"
@@ -38,7 +38,7 @@
     <Button
         android:id="@+id/button4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/launch_real_ip" />
     <Space
         android:layout_width="0dp"
@@ -51,7 +51,7 @@
     <Button
         android:id="@+id/button5"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/launch_first" />
     <Space
         android:layout_width="0dp"
@@ -62,7 +62,7 @@
     <Button
         android:id="@+id/button6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/ai" />
     <Space
         android:layout_width="0dp"
@@ -74,7 +74,7 @@
     <Button
         android:id="@+id/button7"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/launch_localhost" />
     <Space
         android:layout_width="0dp"
@@ -86,7 +86,7 @@
     <Button
         android:id="@+id/button8"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/webview_localhost" />
     <Space
         android:layout_width="0dp"
@@ -96,7 +96,7 @@
     <Button
         android:id="@+id/button9"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="@string/webview" />
     <Space
         android:layout_width="0dp"

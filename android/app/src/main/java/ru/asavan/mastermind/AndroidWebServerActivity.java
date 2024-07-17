@@ -53,7 +53,7 @@ public class AndroidWebServerActivity extends Activity {
             b.put("sh", host);
             b.put("currentMode", "net");
             btnUtils.addButtonBrowser(host, b, R.id.button1);
-            btnUtils.addButtonTwa(host, b, R.id.button4, host);
+            btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button4, host);
         }
         {
             Map<String, String> b = new LinkedHashMap<>();
