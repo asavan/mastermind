@@ -350,13 +350,13 @@ export default function game(window, document, settings) {
         tryEnableInputs();
     }
 
-    if (settings.currentMode === "net") {
+    if (settings.mode === "net") {
         handleInput(window, inputArr, settings, setMyNumber, validateInputCheckRepeat, isSending);
     }
 
     async function testSecret(num) {
         const res = common(myNumber, num);
-        opponentAlreadyWin = ((res === settings.size*10) && (settings.currentMode !== "ai"));
+        opponentAlreadyWin = ((res === settings.size*10) && (settings.mode !== "ai"));
         --opponentMovesLeft;
         await handlers["sendAnswer"](res);
         tryEnableInputs();

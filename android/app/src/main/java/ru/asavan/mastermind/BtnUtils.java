@@ -71,9 +71,6 @@ public class BtnUtils {
         launchWebView(host, parameters);
     }
 
-
-
-
     private void launchTwa(String host, Map<String, String> parameters) {
         startServerAndSocket();
         Uri launchUri = Uri.parse(UrlUtils.getLaunchUrl(host, parameters));

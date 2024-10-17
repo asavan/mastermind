@@ -1,9 +1,9 @@
 "use strict";
 
 import connectionFunc from "./connection.js";
-import qrRender from "./qrcode.js";
+import { removeElem, makeQrPlainEl } from "./qr_helper.js";
 import actionsFunc from "./actions.js";
-import {removeElem, log} from "./helper.js";
+import {log} from "./helper.js";
 
 function toObjJson(v, method) {
     const value = {
@@ -30,9 +30,9 @@ export default function netMode(window, document, settings, gameFunction) {
             url.searchParams.delete("wh");
             url.searchParams.delete("sh");
             url.searchParams.set("color", connection.getOtherColor(color));
-            url.searchParams.set("currentMode", "net");
+            url.searchParams.set("mode", "net");
             console.log("enemy url", url.toString());
-            const code = qrRender(url.toString(), document.querySelector(".qrcode"));
+            const code = makeQrPlainEl(url.toString(), document.querySelector(".qrcode"));
             connection.on("socket_close", () => {
                 removeElem(code);
             });

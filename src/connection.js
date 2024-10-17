@@ -98,7 +98,7 @@ function createSignalingChannel(socketUrl, color, serverOnly) {
 
 const connectionFunc = function (settings, location) {
 
-    const serverOnly = settings.currentMode === "server";
+    const serverOnly = settings.mode === "server";
 
     function on(name, f) {
         handlers[name] = f;

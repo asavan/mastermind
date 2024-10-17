@@ -1,7 +1,6 @@
 "use strict";
 
-import {removeElem} from "./helper.js";
-import qrRender from "./qrcode.js";
+import { removeElem, makeQrPlainEl } from "./qr_helper.js";
 import connectionFunc from "./connection.js";
 
 const SERVER_COLOR = "black";
@@ -21,7 +20,7 @@ function oneQrCode(url, code, color, qrcontainer, document) {
     element.classList.add("qrcode");
     qrcontainer.appendChild(element);
     url.searchParams.set("color", color);
-    qrRender(url.toString(), element);
+    makeQrPlainEl(url.toString(), element);
     colorizePath(element, color);
     code[color] = element;
 }
@@ -32,7 +31,7 @@ export default function server(window, document, settings) {
     const code = {};
     {
         const url = new URL(staticHost);
-        url.searchParams.delete("currentMode");
+        url.searchParams.delete("mode");
         const qrcontainer = document.querySelector(".qrcontainerserver");
         oneQrCode(url, code, "blue", qrcontainer, document);
         oneQrCode(url, code, "red", qrcontainer, document);
