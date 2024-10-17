@@ -28,7 +28,7 @@ public class AndroidWebServerActivity extends Activity {
         try {
             addButtons(IpUtils.getIPAddressSafe());
             Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("currentMode", "ai");
+            mainParams.put("mode", "ai");
             btnUtils.launchWebView(WEB_VIEW_URL, mainParams);
         } catch (Exception e) {
             Log.e(MAIN_LOG_TAG, "main", e);
@@ -41,7 +41,7 @@ public class AndroidWebServerActivity extends Activity {
         final String webSocketHost = hostUtils.getSocketHost(formattedIpAddress);
         {
             Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("currentMode", "ai");
+            mainParams.put("mode", "ai");
             btnUtils.addButtonTwa(WEB_GAME_URL, mainParams, R.id.button3);
             btnUtils.addButtonWebView(WEB_VIEW_URL, mainParams, R.id.button5);
             btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), mainParams, R.id.button6);
@@ -51,7 +51,7 @@ public class AndroidWebServerActivity extends Activity {
             b.put("color", "blue");
             b.put("wh", webSocketHost);
             b.put("sh", host);
-            b.put("currentMode", "net");
+            b.put("mode", "net");
             btnUtils.addButtonBrowser(host, b, R.id.button1);
             btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button4, host);
         }
@@ -60,7 +60,7 @@ public class AndroidWebServerActivity extends Activity {
             b.put("color", "blue");
             b.put("wh", hostUtils.getSocketHost(LOCAL_IP));
             b.put("sh", host);
-            b.put("currentMode", "net");
+            b.put("mode", "net");
             btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCALHOST), b, R.id.button7);
             btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), b, R.id.button8);
             btnUtils.addButtonWebView(WEB_VIEW_URL, b, R.id.button9);
