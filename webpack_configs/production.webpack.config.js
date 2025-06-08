@@ -52,6 +52,7 @@ const prodConfig = () => {
             new InjectManifest({
                 swDest: "sw.js",
                 swSrc: "./src/sw.js",
+                mode: "development",
                 exclude: [
                     /index\.html$/,
                     /CNAME$/,
