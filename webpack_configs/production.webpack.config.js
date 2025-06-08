@@ -9,7 +9,7 @@ import {InjectManifest} from "workbox-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import webpack from "webpack";
 
-import PACKAGE from "../package.json" with { type: "json" };
+import PACKAGE from "../package.json" with {type: "json"};
 
 const prodConfig = () => {
     console.log(PACKAGE.version);
@@ -32,14 +32,17 @@ const prodConfig = () => {
             ]
         },
         optimization: {
-            minimizer: [new TerserJSPlugin({
-                terserOptions: {
-                    mangle: true,
-                    compress: {
-                        drop_console: true
-                    }
-                }
-            }), new CssMinimizerPlugin()],
+            minimizer: [
+                // new TerserJSPlugin({
+                //     terserOptions: {
+                //         mangle: true,
+                //         compress: {
+                //             drop_console: true
+                //         }
+                //     }
+                // }),
+                new CssMinimizerPlugin()
+            ],
         },
         plugins: [
             new MiniCssExtractPlugin({
@@ -68,10 +71,10 @@ const prodConfig = () => {
             }),
             new CopyPlugin({
                 patterns: [
-                    { from: "./src/images", to: "./images" },
-                    { from: "./github", to: "./" },
-                    { from: "./src/manifest.json", to: "./" },
-                    { from: "./.well-known", to: "./.well-known" }
+                    {from: "./src/images", to: "./images"},
+                    {from: "./github", to: "./"},
+                    {from: "./src/manifest.json", to: "./"},
+                    {from: "./.well-known", to: "./.well-known"}
                 ],
             })
         ]

@@ -36,7 +36,7 @@ function networkOrCache(request) {
         if (resp.ok) {
             return resp;
         }
-        console.log(resp);
+        console.log(resp.ok, resp);
         return fromCache(request);
     })
         .catch(() => fromCache(request));
