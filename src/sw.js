@@ -33,10 +33,9 @@ self.addEventListener("fetch", (evt) => {
 
 function networkOrCache(request) {
     return fetch(request).then((resp) => {
-        if (resp.ok) {
+        if (resp.ok || resp.status === 0) {
             return resp;
         }
-        console.log(resp.ok, resp);
         return fromCache(request);
     })
         .catch(() => fromCache(request));

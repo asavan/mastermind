@@ -33,14 +33,14 @@ const prodConfig = () => {
         },
         optimization: {
             minimizer: [
-                // new TerserJSPlugin({
-                //     terserOptions: {
-                //         mangle: true,
-                //         compress: {
-                //             drop_console: true
-                //         }
-                //     }
-                // }),
+                new TerserJSPlugin({
+                    terserOptions: {
+                        mangle: true,
+                        compress: {
+                            drop_console: true
+                        }
+                    }
+                }),
                 new CssMinimizerPlugin()
             ],
         },
