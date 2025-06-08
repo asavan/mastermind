@@ -1,5 +1,4 @@
 import path from "path";
-import { fileURLToPath } from "url";
 
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import HTMLInlineCSSWebpackPlugin from "html-inline-css-webpack-plugin";
@@ -10,13 +9,15 @@ import {InjectManifest} from "workbox-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import webpack from "webpack";
 
+import PACKAGE from "../package.json" with { type: "json" };
+
 const prodConfig = () => {
-    const dirname = path.dirname(fileURLToPath(import.meta.url));
+    console.log(PACKAGE.version);
     return {
 
         entry: {main: ["./src/index.js", "./src/css/style.css"]},
         output: {
-            path: path.resolve(dirname, "../docs"),
+            path: path.resolve(import.meta.dirname, "../docs"),
             filename: "[name].[contenthash].js",
             clean: true
         },
@@ -62,7 +63,8 @@ const prodConfig = () => {
                 ]
             }),
             new webpack.DefinePlugin({
-                __USE_SERVICE_WORKERS__: true
+                __USE_SERVICE_WORKERS__: true,
+                __SERVICE_WORKER_VERSION__: JSON.stringify(PACKAGE.version)
             }),
             new CopyPlugin({
                 patterns: [

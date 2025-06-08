@@ -1,6 +1,6 @@
 /* eslint-env serviceworker */
 
-const version = "1.1.0";
+const version = __SERVICE_WORKER_VERSION__;
 const CACHE = "cache-only-" + version;
 
 self.addEventListener("install", (evt) => {
