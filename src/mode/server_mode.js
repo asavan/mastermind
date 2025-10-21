@@ -1,7 +1,7 @@
 "use strict";
 
-import { removeElem, makeQrPlainEl } from "./qr_helper.js";
-import connectionFunc from "./connection.js";
+import { removeElem, makeQrPlainEl } from "../qr_helper.js";
+import connectionFunc from "../connection.js";
 
 const SERVER_COLOR = "black";
 

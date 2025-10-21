@@ -1,6 +1,6 @@
 "use strict";
 
-import install from "./install_as_app.js";
+import {install} from "netutils";
 import starter from "./starter.js";
 
 

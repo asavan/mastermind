@@ -1,6 +1,6 @@
 "use strict";
 
-import {delay} from "./helper.js";
+import {delay} from "netutils";
 
 const randomInteger = (min, max) => {
     const rand = min + Math.random() * (max - min);
@@ -28,16 +28,12 @@ function simpleBot(settings, game) {
         return res;
     };
 
-    return {
-        makeMove: makeMove
-    };
+    return {makeMove};
 }
 
 export default function ai(window, document, settings, gameFunction) {
-    return new Promise((resolve) => {
-        const game = gameFunction(window, document, settings);
-        const bot = simpleBot(settings, game);
-        game.on("player", (move) => bot.makeMove(move));
-        resolve(game);
-    });
+    const game = gameFunction(window, document, settings);
+    const bot = simpleBot(settings, game);
+    game.on("player", (move) => bot.makeMove(move));
+    return Promise.resolve(game);
 }

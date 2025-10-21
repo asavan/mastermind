@@ -1,9 +1,9 @@
 "use strict";
 
-import connectionFunc from "./connection.js";
-import { removeElem, makeQrPlainEl } from "./qr_helper.js";
-import actionsFunc from "./actions.js";
-import {log} from "./helper.js";
+import connectionFunc from "../connection.js";
+import { removeElem, makeQrPlainEl } from "../qr_helper.js";
+import actionsFunc from "../actions.js";
+import {log} from "../helper.js";
 
 function toObjJson(v, method) {
     const value = {
