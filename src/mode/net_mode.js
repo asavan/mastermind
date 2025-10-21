@@ -1,6 +1,5 @@
 "use strict";
 
-import {removeElem, makeQrPlainEl} from "../qr_helper.js";
 import actionsFunc from "../actions.js";
 import {
     actionToHandler,
@@ -8,6 +7,7 @@ import {
     createSignalingChannel,
     loggerFunc,
     makeQrStr,
+    removeElem,
     netObj
 } from "netutils";
 
@@ -26,7 +26,7 @@ function makeQr(window, document, settings, serverId) {
         height: "15%",
         x: "center",
         y: "center",
-    }
+    };
     return makeQrStr(url.toString(), window, document, settings, image);
 }
 
