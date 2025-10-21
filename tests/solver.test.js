@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 
-import {commonArr, numToDigits} from "../src/solver.js";
+import {commonArr, numToDigits} from "../src/js/solver.js";
 
 test("numToDigits", () => {
     const arr = numToDigits(1234);

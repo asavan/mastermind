@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 
-import simple from "../../src/alg/simple.js";
+import simple from "../../src/js/alg/simple.js";
 
 test("simple", () => {
     const arr = simple.generateAllVariants(4, 6);

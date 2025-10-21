@@ -1,7 +1,7 @@
 "use strict";
 
 import {install} from "netutils";
-import starter from "./starter.js";
+import starter from "./js/starter.js";
 
 
 if (__USE_SERVICE_WORKERS__) {

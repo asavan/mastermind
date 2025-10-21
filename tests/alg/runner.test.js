@@ -2,11 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 
-import simple from "../../src/alg/simple.js";
-import randomGuesser from "../../src/alg/random.js";
-import swaszekGuesser from "../../src/alg/swaszek.js";
-import runner from "../../src/alg/runner.js";
-import engine from "../../src/engine.js";
+import simple from "../../src/js/alg/simple.js";
+import randomGuesser from "../../src/js/alg/random.js";
+import swaszekGuesser from "../../src/js/alg/swaszek.js";
+import runner from "../../src/js/alg/runner.js";
+import engine from "../../src/js/engine.js";
 
 test("simple", () => {
     const eng = engine.fromString("1235");

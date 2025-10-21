@@ -2,10 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 
-import simple from "../../src/alg/simple.js";
-import knuthGuesser from "../../src/alg/knuth.js";
-import runner from "../../src/alg/runner.js";
-import engine from "../../src/engine.js";
+import simple from "../../src/js/alg/simple.js";
+import knuthGuesser from "../../src/js/alg/knuth.js";
+import runner from "../../src/js/alg/runner.js";
+import engine from "../../src/js/engine.js";
 
 test("knuth fast average", () => {
     const allVariants = simple.generateAllVariants(4, 6);
