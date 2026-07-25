@@ -8,6 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
+import com.luigivampa92.ndefemulation.NdefEmulation;
+import com.luigivampa92.ndefemulation.ndef.UriNdefData;
+
+
 public class AndroidWebServerActivity extends Activity {
     private static final int STATIC_CONTENT_PORT = 8080;
     private static final int WEB_SOCKET_PORT = 8088;
@@ -19,6 +23,9 @@ public class AndroidWebServerActivity extends Activity {
     private static final boolean secure = false;
 
     private BtnUtils btnUtils;
+
+    private NdefEmulation ndefEmulation;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,10 @@ public class AndroidWebServerActivity extends Activity {
         HostUtils hostUtils = new HostUtils(STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         final String host = hostUtils.getStaticHost(formattedIpAddress);
         final String webSocketHost = hostUtils.getSocketHost(formattedIpAddress);
+
+        ndefEmulation = new NdefEmulation(this);
+        ndefEmulation.setCurrentEmulatedNdefData(new UriNdefData(host));
+
         {
             Map<String, String> mainParams = new LinkedHashMap<>();
             mainParams.put("mode", "ai");
@@ -69,9 +80,10 @@ public class AndroidWebServerActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        ndefEmulation.setCurrentEmulatedNdefData(null);
         if (btnUtils != null) {
             btnUtils.onDestroy();
         }
+        super.onDestroy();
     }
 }
