@@ -32,6 +32,7 @@ public class AndroidWebServerActivity extends Activity {
         setContentView(R.layout.main);
         btnUtils = new BtnUtils(this, STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         try {
+            ndefEmulation = new NdefEmulation(this);
             addButtons(IpUtils.getIPAddressSafe());
         } catch (Exception e) {
             Log.e(MAIN_LOG_TAG, "main", e);
@@ -43,8 +44,6 @@ public class AndroidWebServerActivity extends Activity {
         final String host = hostUtils.getStaticHost(formattedIpAddress);
         final String webSocketHost = hostUtils.getSocketHost(formattedIpAddress);
 
-        ndefEmulation = new NdefEmulation(this);
-        ndefEmulation.setCurrentEmulatedNdefData(new UriNdefData(host));
 
         {
             Map<String, String> mainParams = new LinkedHashMap<>();
@@ -60,10 +59,12 @@ public class AndroidWebServerActivity extends Activity {
             b.put("mode", "net");
             btnUtils.addButtonBrowser(host, b, R.id.button1);
             btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button4, host);
+            String netUrl = UrlUtils.getLaunchUrl(host, b);
+            ndefEmulation.setCurrentEmulatedNdefData(new UriNdefData(netUrl));
         }
         Map<String, String> mainParams = new LinkedHashMap<>();
         mainParams.put("mode", "ai");
-        btnUtils.launchWebView(hostUtils.getStaticHost(LOCAL_IP), mainParams);
+        btnUtils.launchTwa(hostUtils.getStaticHost(LOCALHOST), mainParams);
     }
 
     @Override
