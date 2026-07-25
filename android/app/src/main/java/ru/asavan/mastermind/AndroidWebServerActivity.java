@@ -18,7 +18,6 @@ public class AndroidWebServerActivity extends Activity {
     private static final String WEB_GAME_URL = "https://asavan.github.io/mastermind/";
     public static final String LOCAL_IP = "127.0.0.1";
     public static final String LOCALHOST = "localhost";
-    public static final String WEB_VIEW_URL = "file:///android_asset/www/index.html";
     public static final String MAIN_LOG_TAG = "MASTERMIND_TAG";
     private static final boolean secure = false;
 
@@ -34,9 +33,6 @@ public class AndroidWebServerActivity extends Activity {
         btnUtils = new BtnUtils(this, STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         try {
             addButtons(IpUtils.getIPAddressSafe());
-            Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("mode", "ai");
-            btnUtils.launchWebView(WEB_VIEW_URL, mainParams);
         } catch (Exception e) {
             Log.e(MAIN_LOG_TAG, "main", e);
         }
@@ -54,7 +50,6 @@ public class AndroidWebServerActivity extends Activity {
             Map<String, String> mainParams = new LinkedHashMap<>();
             mainParams.put("mode", "ai");
             btnUtils.addButtonTwa(WEB_GAME_URL, mainParams, R.id.button3);
-            btnUtils.addButtonWebView(WEB_VIEW_URL, mainParams, R.id.button5);
             btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), mainParams, R.id.button6);
         }
         {
@@ -66,16 +61,9 @@ public class AndroidWebServerActivity extends Activity {
             btnUtils.addButtonBrowser(host, b, R.id.button1);
             btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button4, host);
         }
-        {
-            Map<String, String> b = new LinkedHashMap<>();
-            b.put("color", "blue");
-            b.put("wh", hostUtils.getSocketHost(LOCAL_IP));
-            b.put("sh", host);
-            b.put("mode", "net");
-            btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCALHOST), b, R.id.button7);
-            btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), b, R.id.button8);
-            btnUtils.addButtonWebView(WEB_VIEW_URL, b, R.id.button9);
-        }
+        Map<String, String> mainParams = new LinkedHashMap<>();
+        mainParams.put("mode", "ai");
+        btnUtils.launchWebView(hostUtils.getStaticHost(LOCAL_IP), mainParams);
     }
 
     @Override
