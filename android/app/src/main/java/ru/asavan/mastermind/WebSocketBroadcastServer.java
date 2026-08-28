@@ -35,15 +35,15 @@ public class WebSocketBroadcastServer extends NanoWSD {
         super.stop();
     }
 
-    void addUser(WebSocket user) {
+    synchronized public void addUser(WebSocket user) {
         list.add(user);
     }
 
-    void removeUser(WebSocket user) {
+    synchronized public void removeUser(WebSocket user) {
         list.remove(user);
     }
 
-    public void broadcast(WebSocket sender, WebSocketFrame message) {
+    synchronized public void broadcast(WebSocket sender, WebSocketFrame message) {
         try {
             message.setUnmasked();
             for (WebSocket ws : list) {
