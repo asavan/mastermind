@@ -1,6 +1,6 @@
 {
   "name": "mastermind",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "private": true,
   "description": "Pikifazy",
   "author": "Alex Sav",
@@ -28,9 +28,9 @@
   },
   "homepage": "https://asavan.github.io/mastermind/",
   "devDependencies": {
-    "devdeps": "github:asavan/dev-deps#v0.1.3"
+    "devdeps": "github:asavan/dev-deps#v0.3.1"
   },
   "dependencies": {
-    "netutils": "github:asavan/netutils#v0.2.1"
+    "netutils": "github:asavan/netutils#v0.2.2"
   }
 }
